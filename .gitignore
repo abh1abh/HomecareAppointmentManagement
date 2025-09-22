@@ -39,3 +39,5 @@ artifacts/
 
 # Optional: ignore launchSettings.json if it's machine-specific
 # Properties/launchSettings.json
+
+node_modules/
