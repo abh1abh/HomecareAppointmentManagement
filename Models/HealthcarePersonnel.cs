@@ -4,7 +4,7 @@ namespace HomecareAppointmentManagment.Models;
 
 public class HealthcarePersonnel
 {
-    public int ClientId { get; set; }
+    public int HealthcarePersonnelId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;
