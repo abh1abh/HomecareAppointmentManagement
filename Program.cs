@@ -12,6 +12,11 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 });
 
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IHealthcarePersonnelRepository, HealthcarePersonnelRepository>();
+builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAppointmentTaskRepository, AppointmentTaskRepository>();
+builder.Services.AddScoped<IAvailableSlotRepository, AvailableSlotRepository>();
+builder.Services.AddScoped<IChangeLogRepository, ChangeLogRepository>();
 
 var app = builder.Build();
 
