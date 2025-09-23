@@ -29,6 +29,7 @@ public class AvailableSlotController : Controller
         return View(slot);
     }
 
+    [HttpGet]
     public IActionResult Create()
     {
         return View();
@@ -41,6 +42,7 @@ public class AvailableSlotController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var slot = await _repository.GetById(id);
@@ -62,6 +64,7 @@ public class AvailableSlotController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         var slot = await _repository.GetById(id);

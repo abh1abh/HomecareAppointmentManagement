@@ -29,6 +29,7 @@ public class HealthcarePersonnelController : Controller
         return View(person);
     }
 
+    [HttpGet]
     public IActionResult Create()
     {
         return View();
@@ -41,6 +42,7 @@ public class HealthcarePersonnelController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var person = await _repository.GetById(id);
@@ -62,6 +64,7 @@ public class HealthcarePersonnelController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         var person = await _repository.GetById(id);

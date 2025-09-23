@@ -31,6 +31,7 @@ public class ClientController : Controller
         return View(client);
     }
 
+    [HttpGet]
     public IActionResult Create()
     {
         return View();
@@ -43,6 +44,7 @@ public class ClientController : Controller
         return RedirectToAction(nameof(Table));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var client = await _clientRepository.GetClientById(id);
@@ -64,6 +66,7 @@ public class ClientController : Controller
         return RedirectToAction(nameof(Table));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         var client = await _clientRepository.GetClientById(id);

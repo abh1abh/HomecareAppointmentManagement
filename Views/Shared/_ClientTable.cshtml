@@ -1,0 +1,29 @@
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Client ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Client client in Model.Clients)
+            {
+                <tr>
+                    <td>@client.ClientId</td>
+                    <td>@client.Name</td>
+                    <td>@client.Phone</td>
+                    <td>@client.Address</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@client.ClientId" class="btn btn-primary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@client.ClientId" class="btn btn-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@client.ClientId" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

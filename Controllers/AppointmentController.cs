@@ -19,6 +19,12 @@ public class AppointmentController : Controller
         return View(appointments);
     }
 
+    public async Task<IActionResult> Table()
+    {
+        var appointments = await _repository.GetAll();
+        return View(appointments);
+    }
+
     public async Task<IActionResult> Details(int id)
     {
         var appointment = await _repository.GetById(id);
@@ -29,6 +35,7 @@ public class AppointmentController : Controller
         return View(appointment);
     }
 
+    [HttpGet]
     public IActionResult Create()
     {
         return View();
@@ -41,7 +48,7 @@ public class AppointmentController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    
+    [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var appointment = await _repository.GetById(id);
@@ -63,6 +70,7 @@ public class AppointmentController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         var appointment = await _repository.GetById(id);
