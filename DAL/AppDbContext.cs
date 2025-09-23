@@ -8,7 +8,7 @@ namespace HomecareAppointmentManagment.DAL
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            Database.EnsureCreated();
+            // Database.EnsureCreated();
         }
 
         public DbSet<Client> Clients { get; set; }
@@ -19,9 +19,9 @@ namespace HomecareAppointmentManagment.DAL
 
         public DbSet<ChangeLog> ChangeLogs { get; set; }
 
-        // protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        // {
-        //     optionsBuilder.UseLazyLoadingProxies();
-        // }
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseLazyLoadingProxies();
+        }
     }
 }

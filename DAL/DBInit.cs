@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using HomecareAppointmentManagment.Models;
 
 namespace HomecareAppointmentManagment.DAL;
