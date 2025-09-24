@@ -1,113 +1,206 @@
+using System.Security.Claims;
 using HomecareAppointmentManagment.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HomecareAppointmentManagment.DAL;
 
 public static class DBInit
 {
-    public static void Seed(IApplicationBuilder app)
+    public static async Task SeedAsync(IApplicationBuilder app)
     {
-        using var serviceScope = app.ApplicationServices.CreateScope();
-        AppDbContext context = serviceScope.ServiceProvider.GetRequiredService<AppDbContext>();
+        using var scope = app.ApplicationServices.CreateScope();
+        var services = scope.ServiceProvider;
+
+        var context   = services.GetRequiredService<AppDbContext>();
+        var userMgr   = services.GetRequiredService<UserManager<IdentityUser>>();
+        var roleMgr   = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+        // For dev, resets db each time
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
-        if (!context.Clients.Any() && !context.HealthcareWorkers.Any())
+        // Roles for RBAC
+        var roles = new[] { "Admin", "HealthcareWorker", "Client" };
+        foreach (var r in roles)
+            if (!await roleMgr.RoleExistsAsync(r))
+                await roleMgr.CreateAsync(new IdentityRole(r));
+
+        // Admin user
+        var adminEmail = "admin@homecare.local";
+        var adminUser  = await userMgr.FindByEmailAsync(adminEmail);
+        if (adminUser is null)
         {
-            // Clients
-            var clients = new List<Client>
-            {
-                new Client { Name = "John Doe", Address = "123 Main St", Phone = "555-1234" },
-                new Client { Name = "Jane Smith", Address = "456 Oak Ave", Phone = "555-5678" },
-                new Client { Name = "Bob Johnson", Address = "789 Pine Rd", Phone = "555-9012" }
-            };
-
-            // Healthcare Workers
-            var staff = new List<HealthcareWorker>
-            {
-                new HealthcareWorker { Name = "Alice Brown", Address = "12 Health St", Phone = "555-1111" },
-                new HealthcareWorker { Name = "David Wilson", Address = "34 Care Ave", Phone = "555-2222" }
-            };
-
-            context.AddRange(clients);
-            context.AddRange(staff);
-            context.SaveChanges();
-
-            // Appointments
-            var appointments = new List<Appointment>
-            {
-                new Appointment
-                {
-                    ClientId = clients[0].ClientId,
-                    HealthcareWorkerId = staff[0].HealthcareWorkerId,
-                    Start = DateTime.Today.AddHours(9),
-                    End = DateTime.Today.AddHours(10),
-                    Notes = "Medication check and blood pressure",
-                    AppointmentTasks = new List<AppointmentTask>
-                    {
-                        new AppointmentTask { Description = "Check blood pressure", IsCompleted = false },
-                        new AppointmentTask { Description = "Administer medication", IsCompleted = false }
-                    }
-                },
-                new Appointment
-                {
-                    ClientId = clients[1].ClientId,
-                    HealthcareWorkerId = staff[1].HealthcareWorkerId,
-                    Start = DateTime.Today.AddHours(11),
-                    End = DateTime.Today.AddHours(12),
-                    Notes = "Assistance with mobility exercises",
-                    AppointmentTasks = new List<AppointmentTask>
-                    {
-                        new AppointmentTask { Description = "Help with walking exercises", IsCompleted = false }
-                    }
-                }
-            };
-
-            context.AddRange(appointments);
-            context.SaveChanges();
-
-            // Available slots for staff
-            var slots = new List<AvailableSlot>
-            {
-                new AvailableSlot
-                {
-                    HealthcareWorkerId = staff[0].HealthcareWorkerId,
-                    Start = DateTime.Today.AddHours(14),
-                    End = DateTime.Today.AddHours(15),
-                    IsBooked = false
-                },
-                new AvailableSlot
-                {
-                    HealthcareWorkerId = staff[1].HealthcareWorkerId,
-                    Start = DateTime.Today.AddHours(15),
-                    End = DateTime.Today.AddHours(16),
-                    IsBooked = true
-                }
-            };
-
-            context.AddRange(slots);
-            context.SaveChanges();
-
-            // Change logs
-            var changeLogs = new List<ChangeLog>
-            {
-                new ChangeLog
-                {
-                    AppointmentId = appointments[0].Id,
-                    ChangeDate = DateTime.Now,
-                    ChangedByUserId = 1, // mock admin/user
-                    ChangeDescription = "Updated notes for medication"
-                },
-                new ChangeLog
-                {
-                    AppointmentId = appointments[1].Id,
-                    ChangeDate = DateTime.Now,
-                    ChangedByUserId = 2,
-                    ChangeDescription = "Rescheduled due to patient request"
-                }
-            };
-
-            context.AddRange(changeLogs);
-            context.SaveChanges();
+            adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+            await userMgr.CreateAsync(adminUser, "Admin123!");
+            await userMgr.AddToRoleAsync(adminUser, "Admin");
         }
+ 
+
+        // Init of Clients with IdentityUser link
+        var clientSeeds = new[]
+        {
+            new { Name="John Doe",  Address="123 Main St",  Phone="555-1234", Email="john@homecare.local",  Password="Client123!" },
+            new { Name="Jane Smith",Address="456 Oak Ave", Phone="555-5678", Email="jane@homecare.local",  Password="Client123!" },
+            new { Name="Bob Johnson",Address="789 Pine Rd",Phone="555-9012", Email="bob@homecare.local",   Password="Client123!" }
+        };
+
+        var clients = new List<Client>();
+
+        foreach (var c in clientSeeds)
+        {
+            // 1) Identity user
+            var user = await userMgr.FindByEmailAsync(c.Email);
+            if (user is null)
+            {
+                user = new IdentityUser { UserName = c.Email, Email = c.Email, EmailConfirmed = true };
+                await userMgr.CreateAsync(user, c.Password);
+                await userMgr.AddToRoleAsync(user, "Client");
+            }
+
+            // 2) Domain client row linked via IdentityUserId
+            var client = await context.Clients.FirstOrDefaultAsync(cl => cl.IdentityUserId == user.Id);
+            if (client is null)
+            {
+                client = new Client
+                {
+                    Name = c.Name,
+                    Address = c.Address,
+                    Phone = c.Phone,
+                    Email = c.Email,
+                    IdentityUserId = user.Id
+                };
+                context.Clients.Add(client);
+                await context.SaveChangesAsync();
+            }
+
+            // 3) Ensure claim: ClientId
+            var existingClaims = await userMgr.GetClaimsAsync(user);
+            if (!existingClaims.Any(cc => cc.Type == "ClientId"))
+            {
+                await userMgr.AddClaimAsync(user, new Claim("ClientId", client.ClientId.ToString()));
+            }
+
+            clients.Add(client);
+        }
+
+
+        // Init of HealthcareWorkers with IdentityUser link and claim
+        var workerSeed = new[]
+        {
+            new { Name="Alice Brown", Address="12 Health St", Phone="555-1111", Email="alice@homecare.local", Password="Nurse123!" },
+            new { Name="David Wilson", Address="34 Care Ave",  Phone="555-2222", Email="david@homecare.local", Password="Nurse123!" }
+        };
+
+        var workers = new List<HealthcareWorker>();
+
+        foreach (var w in workerSeed)
+        {
+            // 1) Identity user
+            var user = await userMgr.FindByEmailAsync(w.Email);
+            if (user is null)
+            {
+                user = new IdentityUser { UserName = w.Email, Email = w.Email, EmailConfirmed = true };
+                await userMgr.CreateAsync(user, w.Password);
+                await userMgr.AddToRoleAsync(user, "HealthcareWorker");
+            }
+
+            // 2) Domain worker row linked via IdentityUserId (if not existing)
+            var worker = await context.HealthcareWorkers.FirstOrDefaultAsync(hw => hw.IdentityUserId == user.Id);
+            if (worker is null)
+            {
+                worker = new HealthcareWorker
+                {
+                    Name = w.Name,
+                    Address = w.Address,
+                    Phone = w.Phone,
+                    Email = w.Email,
+                    IdentityUserId = user.Id
+                };
+                context.HealthcareWorkers.Add(worker);
+                await context.SaveChangesAsync();
+            }
+
+            // 3) Ensure claim: HealthcareWorkerId
+            var claims = await userMgr.GetClaimsAsync(user);
+            if (!claims.Any(c => c.Type == "HealthcareWorkerId"))
+            {
+                await userMgr.AddClaimAsync(user, new Claim("HealthcareWorkerId", worker.HealthcareWorkerId.ToString()));
+            }
+
+            workers.Add(worker);
+        }
+
+        // Init Appointments, AvailableSlots, ChangeLogs
+        var appts = new List<Appointment>
+        {
+            new Appointment
+            {
+                ClientId = clients[0].ClientId,
+                HealthcareWorkerId = workers[0].HealthcareWorkerId,
+                Start = DateTime.Today.AddHours(9),
+                End   = DateTime.Today.AddHours(10),
+                Notes = "Medication check and blood pressure",
+                AppointmentTasks = new List<AppointmentTask>
+                {
+                    new AppointmentTask { Description = "Check blood pressure",    IsCompleted = false },
+                    new AppointmentTask { Description = "Administer medication",   IsCompleted = false }
+                }
+            },
+            new Appointment
+            {
+                ClientId = clients[1].ClientId,
+                HealthcareWorkerId = workers[1].HealthcareWorkerId,
+                Start = DateTime.Today.AddHours(11),
+                End   = DateTime.Today.AddHours(12),
+                Notes = "Assistance with mobility exercises",
+                AppointmentTasks = new List<AppointmentTask>
+                {
+                    new AppointmentTask { Description = "Help with walking exercises", IsCompleted = false }
+                }
+            }
+        };
+        context.Appointments.AddRange(appts);
+        await context.SaveChangesAsync();
+
+        var slots = new List<AvailableSlot>
+        {
+            new AvailableSlot
+            {
+                HealthcareWorkerId = workers[0].HealthcareWorkerId,
+                Start = DateTime.Today.AddHours(14),
+                End   = DateTime.Today.AddHours(15),
+                IsBooked = false
+            },
+            new AvailableSlot
+            {
+                HealthcareWorkerId = workers[1].HealthcareWorkerId,
+                Start = DateTime.Today.AddHours(15),
+                End   = DateTime.Today.AddHours(16),
+                IsBooked = true
+            }
+        };
+        context.AvailableSlots.AddRange(slots);
+        await context.SaveChangesAsync();
+
+        var changeLogs = new List<ChangeLog>
+        {
+            new ChangeLog
+            {
+                AppointmentId = appts[0].Id,
+                ChangeDate = DateTime.Now,
+                ChangedByUserId = 1, // demo value
+                ChangeDescription = "Updated notes for medication"
+            },
+            new ChangeLog
+            {
+                AppointmentId = appts[1].Id,
+                ChangeDate = DateTime.Now,
+                ChangedByUserId = 2,
+                ChangeDescription = "Rescheduled due to patient request"
+            }
+        };
+        context.ChangeLogs.AddRange(changeLogs);
+        await context.SaveChangesAsync();
     }
 }

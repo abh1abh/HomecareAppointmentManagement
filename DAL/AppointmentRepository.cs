@@ -105,15 +105,15 @@ public class AppointmentRepository : IAppointmentRepository
         }
     }
 
-    public async Task<IEnumerable<Appointment>?> GetByHealthcarePersonnelId(int personnelId) // Modified return type
+    public async Task<IEnumerable<Appointment>?> GetByHealthcareWorkerId(int healthcareWorkerId) // Modified return type
     {
         try
         {
-            return await _db.Appointments.Where(a => a.HealthcareWorkerId == personnelId).ToListAsync();
+            return await _db.Appointments.Where(a => a.HealthcareWorkerId == healthcareWorkerId).ToListAsync();
         }
         catch (Exception e)
         {
-            _logger.LogError("[AppointmentRepository] appointment Where(a => a.HealthcareWorkerId == personnelId).ToListAsync() failed when GetByHealthcareWorkerId() for WorkerId {WorkerId:0000}, error messager: {e}", personnelId, e.Message);
+            _logger.LogError("[AppointmentRepository] appointment Where(a => a.HealthcareWorkerId == healthcareWorkerId).ToListAsync() failed when GetByHealthcareWorkerId() for WorkerId {WorkerId:0000}, error messager: {e}", healthcareWorkerId, e.Message);
             return null;
         }
     }

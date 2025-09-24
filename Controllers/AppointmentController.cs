@@ -1,9 +1,13 @@
 using HomecareAppointmentManagement.DAL;
+using HomecareAppointmentManagment.Infrastructure;
 using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagment.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomecareAppointmentManagment.Controllers;
 
+[Authorize(Roles = "Client,Admin,HealthcareWorker")]
 public class AppointmentController : Controller
 {
     private readonly IAppointmentRepository _repository;
@@ -17,13 +21,57 @@ public class AppointmentController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var appointments = await _repository.GetAll();
-        if (appointments == null) // Added null check
+        if (User.IsInRole("Admin"))
         {
-            _logger.LogError("[AppointmentController] appointment list not found while executing _repository.GetAll()");
-            return NotFound("Appointment list not found");
+            var all = await _repository.GetAll();
+            if (all == null) // Added null check
+            {
+                _logger.LogError("[AppointmentController] appointment list not found while executing _repository.GetAll()");
+                return NotFound("Appointment list not found");
+            }
+            return View(new AppointmentIndexViewModel
+            {
+                ViewMode = AppointmentIndexMode.Admin,
+                Appointments = all
+            });
         }
-        return View(appointments);
+
+        if (User.IsInRole("Client"))
+        {
+            var clientId = User.TryGetClientId();
+            if (clientId is null) return Forbid();
+            var clientAppointments = await _repository.GetByClientId(clientId.Value);
+            if (clientAppointments == null) // Added null check
+            {
+                _logger.LogError("[AppointmentController] appointment list not found while executing _repository.GetByClientId() for ClientId {ClientId:0000}", clientId.Value);
+                return NotFound("Appointment list not found");
+            }
+            return View(new AppointmentIndexViewModel
+            {
+                ViewMode = AppointmentIndexMode.Client,
+                Appointments = clientAppointments
+            });
+        }
+
+        if (User.IsInRole("HealthcareWorker"))
+        {
+            var workerId = User.TryGetHealthcareWorkerId();
+            if (workerId is null) return Forbid();
+            var workerAppointments = await _repository.GetByHealthcareWorkerId(workerId.Value);
+            if (workerAppointments == null) // Added null check
+            {
+                _logger.LogError("[AppointmentController] appointment list not found while executing _repository.GetByHealthcareWorkerId() for HealthcareWorkerId {HealthcareWorkerId:0000}", workerId.Value);
+                return NotFound("Appointment list not found");
+            }
+            return View(new AppointmentIndexViewModel
+            {
+                ViewMode = AppointmentIndexMode.Worker,
+                Appointments = workerAppointments
+            });
+        }
+
+        return Forbid();
+        
     }
 
     public async Task<IActionResult> Table()

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace HomecareAppointmentManagment.Models;
 
@@ -19,6 +20,13 @@ public class Client
     [Phone(ErrorMessage = "Please enter a valid phone number.")]
     public string? Phone { get; set; }
 
+    [Required]
+    [EmailAddress(ErrorMessage = "Invalid email address format.")]
+    public string? Email { get; set; }
+
     public virtual List<Appointment>? Appointments { get; set; }
+
+    public string? IdentityUserId { get; set; }
+    public virtual IdentityUser? IdentityUser { get; set; }
 }
 

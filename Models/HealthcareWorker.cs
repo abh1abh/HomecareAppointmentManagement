@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace HomecareAppointmentManagment.Models;
 
@@ -20,6 +21,13 @@ public class HealthcareWorker
     [StringLength(30)]
     public string Phone { get; set; } = string.Empty;
 
+    [Required]
+    [EmailAddress(ErrorMessage = "Invalid email address format.")]
+    public string? Email { get; set; }
+
     public virtual List<Appointment>? Appointments { get; set; }
     public virtual List<AvailableSlot>? AvailableSlots { get; set; }
+
+    public string? IdentityUserId { get; set; }
+    public virtual IdentityUser? IdentityUser { get; set; }
 }

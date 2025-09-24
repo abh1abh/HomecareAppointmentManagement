@@ -1,9 +1,12 @@
 using HomecareAppointmentManagement.DAL;
 using HomecareAppointmentManagment.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomecareAppointmentManagment.Controllers;
 
+
+[Authorize(Roles = "Admin")]
 public class HealthcareWorkerController : Controller
 {
     private readonly IHealthcareWorkerRepository _repository;

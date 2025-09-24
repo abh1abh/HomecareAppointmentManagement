@@ -28,6 +28,23 @@ public class AvailableSlotRepository : IAvailableSlotRepository
         }
     }
 
+
+    public async Task<IEnumerable<AvailableSlot>> GetByWorkerId(int healthcareWorkerId)
+    {
+        try
+        {
+            var q = _db.AvailableSlots.Where(s => s.HealthcareWorkerId == healthcareWorkerId);
+            return await q.OrderBy(s => s.Start).ToListAsync();
+
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AvailableSlotRepository] available slot Where(healthcareWorkerId) failed when GetByWorkerId() for HealthcareWorkerId {HealthcareWorkerId:0000}, error messager: {e}",
+                healthcareWorkerId, e.Message);
+            return new List<AvailableSlot>(); 
+        }
+    }
+
     public async Task<AvailableSlot?> GetById(int id)
     {
         try

@@ -1,6 +1,7 @@
 using HomecareAppointmentManagement.DAL;
 using HomecareAppointmentManagment.Models;
 using HomecareAppointmentManagment.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomecareAppointmentManagment.Controllers;
@@ -17,7 +18,8 @@ public class ClientController : Controller
         _logger = logger;
     }
 
-   public async Task<IActionResult> Table()
+    [Authorize]
+    public async Task<IActionResult> Table()
     {
         var clients = await _clientRepository.GetAll();
         if (clients == null)

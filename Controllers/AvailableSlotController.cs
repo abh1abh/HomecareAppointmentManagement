@@ -1,112 +1,135 @@
 using HomecareAppointmentManagement.DAL;
+using HomecareAppointmentManagment.Infrastructure; // <-- add
 using HomecareAppointmentManagment.Models;
+using Microsoft.AspNetCore.Authorization;           // <-- add
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomecareAppointmentManagment.Controllers;
 
+[Authorize(Roles = "HealthcareWorker,Admin")]
 public class AvailableSlotController : Controller
 {
     private readonly IAvailableSlotRepository _repository;
-    private readonly ILogger<AvailableSlotController> _logger; // Added
+    private readonly ILogger<AvailableSlotController> _logger;
 
-    public AvailableSlotController(IAvailableSlotRepository repository, ILogger<AvailableSlotController> logger) // Modified
+    public AvailableSlotController(IAvailableSlotRepository repository, ILogger<AvailableSlotController> logger)
     {
         _repository = repository;
-        _logger = logger; // Added
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
     {
-        var slots = await _repository.GetAll();
-        if (slots == null) // Added null check
+        if (User.IsAdmin())
         {
-            _logger.LogError("[AvailableSlotController] available slot list not found while executing _repository.GetAll()");
-            return NotFound("Available slot list not found");
+            var all = await _repository.GetAll();
+            return View(all);
         }
-        return View(slots);
+
+        var myId = User.TryGetHealthcareWorkerId();
+        if (myId is null) return Forbid();
+
+        var mine = await _repository.GetByWorkerId(myId.Value); // make sure this method returns a list
+        return View(mine);
     }
 
     public async Task<IActionResult> Details(int id)
     {
         var slot = await _repository.GetById(id);
-        if (slot == null)
-        {
-            _logger.LogError("[AvailableSlotController] available slot not found while executing _repository.GetById() for AvailableSlotId {AvailableSlotId:0000}", id);
-            return NotFound("Available slot not found");
-        }
+        if (slot == null) return NotFound();
+
+        if (!User.IsAdmin() && slot.HealthcareWorkerId != User.TryGetHealthcareWorkerId())
+            return Forbid();
+
         return View(slot);
     }
 
     [HttpGet]
-    public IActionResult Create()
-    {
-        return View();
-    }
+    public IActionResult Create() => View();
 
     [HttpPost]
     public async Task<IActionResult> Create(AvailableSlot slot)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return View(slot);
+
+        if (!User.IsAdmin())
         {
-            bool returnOk = await _repository.Create(slot); // Modified
-            if (returnOk)
-                return RedirectToAction(nameof(Index));
+            var myId = User.TryGetHealthcareWorkerId();
+            if (myId is null) return Forbid();
+            slot.HealthcareWorkerId = myId.Value; // force ownership
         }
-        _logger.LogError("[AvailableSlotController] available slot creation failed {@slot}", slot);
-        return View(slot);
+
+        var ok = await _repository.Create(slot);
+        if (!ok)
+        {
+            _logger.LogError("[AvailableSlotController] available slot creation failed {@slot}", slot);
+            return View(slot);
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
         var slot = await _repository.GetById(id);
-        if (slot == null)
-        {
-            _logger.LogError("[AvailableSlotController] available slot not found when editing for AvailableSlotId {AvailableSlotId:0000}", id);
-            return NotFound("Available slot not found");
-        }
+        if (slot == null) return NotFound();
+
+        if (!User.IsAdmin() && slot.HealthcareWorkerId != User.TryGetHealthcareWorkerId())
+            return Forbid();
+
         return View(slot);
     }
 
     [HttpPost]
     public async Task<IActionResult> Edit(int id, AvailableSlot slot)
     {
-        if (id != slot.Id)
+        if (id != slot.Id) return NotFound();
+
+        var existing = await _repository.GetById(id);
+        if (existing == null) return NotFound();
+
+        if (!User.IsAdmin() && existing.HealthcareWorkerId != User.TryGetHealthcareWorkerId())
+            return Forbid();
+
+        // prevent switching ownership
+        if (!User.IsAdmin()) slot.HealthcareWorkerId = existing.HealthcareWorkerId;
+
+        if (!ModelState.IsValid) return View(slot);
+
+        var ok = await _repository.Update(slot);
+        if (!ok)
         {
-            _logger.LogError("[AvailableSlotController] available slot ID mismatch during edit for AvailableSlotId {AvailableSlotId:0000}", id);
-            return NotFound("Available slot ID mismatch");
+            _logger.LogError("[AvailableSlotController] update failed {@slot}", slot);
+            return View(slot);
         }
-        if (ModelState.IsValid)
-        {
-            bool returnOk = await _repository.Update(slot); // Modified
-            if (returnOk)
-                return RedirectToAction(nameof(Index));
-        }
-        _logger.LogError("[AvailableSlotController] available slot update failed for AvailableSlotId {AvailableSlotId:0000}, {@slot}", id, slot);
-        return View(slot);
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
     {
         var slot = await _repository.GetById(id);
-        if (slot == null)
-        {
-            _logger.LogError("[AvailableSlotController] available slot not found when deleting for AvailableSlotId {AvailableSlotId:0000}", id);
-            return NotFound("Available slot not found");
-        }
+        if (slot == null) return NotFound();
+
+        if (!User.IsAdmin() && slot.HealthcareWorkerId != User.TryGetHealthcareWorkerId())
+            return Forbid();
+
         return View(slot);
     }
 
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        bool returnOk = await _repository.Delete(id); // Modified
-        if (!returnOk)
-        {
-            _logger.LogError("[AvailableSlotController] available slot deletion failed for AvailableSlotId {AvailableSlotId:0000}", id);
-            return BadRequest("Available slot deletion failed");
-        }
+        var slot = await _repository.GetById(id);
+        if (slot == null) return NotFound();
+
+        if (!User.IsAdmin() && slot.HealthcareWorkerId != User.TryGetHealthcareWorkerId())
+            return Forbid();
+
+        var ok = await _repository.Delete(id);
+        if (!ok) return BadRequest("Available slot deletion failed");
+
         return RedirectToAction(nameof(Index));
     }
 }

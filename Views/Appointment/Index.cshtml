@@ -1,0 +1,26 @@
+@model AppointmentIndexViewModel
+<h2>@(Model.ViewMode == AppointmentIndexMode.Admin ? "All Appointments" : (Model.ViewMode == AppointmentIndexMode.Client ? "My Appointments (Client)" : "My Appointments (Worker)"))</h2>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Start</th>
+      <th>End</th>
+      @if (Model.ViewMode != AppointmentIndexMode.Client) { <th>Client</th> }
+      @if (Model.ViewMode != AppointmentIndexMode.Worker) { <th>Healthcare worker</th> }
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach (var a in Model.Appointments)
+  {
+    <tr>
+      <td>@a.Start</td>
+      <td>@a.End</td>
+      @if (Model.ViewMode != AppointmentIndexMode.Client) { <td>@a.Client?.Name</td> }
+      @if (Model.ViewMode != AppointmentIndexMode.Worker) { <td>@a.HealthcareWorker?.Name</td> }
+      <td>@a.Notes</td>
+    </tr>
+  }
+  </tbody>
+</table>

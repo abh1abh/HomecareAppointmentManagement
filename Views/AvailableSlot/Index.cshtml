@@ -1,0 +1,85 @@
+@using System.Globalization
+@model IEnumerable<HomecareAppointmentManagment.Models.AvailableSlot>
+
+@{
+    var isAdmin = User.IsInRole("Admin");
+    ViewData["Title"] = isAdmin ? "All Slots" : "My Schedule";
+    string FormatDate(DateTime dt) => dt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+}
+
+<h2 class="mb-3">@ViewData["Title"]</h2>
+
+@if (TempData["Success"] is string s)
+{
+    <div class="alert alert-success">@s</div>
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <span class="badge bg-success me-2">Free</span>
+        <span class="badge bg-secondary">Booked</span>
+    </div>
+    <div>
+        <a asp-action="Create" class="btn btn-primary">Create slot</a>
+    </div>
+</div>
+
+@if (Model is null || !Model.Any())
+{
+    <div class="alert alert-info">
+        No slots found.
+        @if (!isAdmin)
+        {
+            <span>Create your first slot with the button above.</span>
+        }
+    </div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th scope="col">Start</th>
+                <th scope="col">End</th>
+                <th scope="col" class="text-end">Duration</th>
+                @if (isAdmin)
+                {
+                    <th scope="col">Worker Id</th>
+                }
+                <th scope="col">Status</th>
+                <th scope="col" class="text-nowrap"></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var slot in Model.OrderBy(s => s.Start))
+        {
+            var duration = (slot.End - slot.Start);
+            var minutes = (int)Math.Round(duration.TotalMinutes);
+            <tr>
+                <td>@FormatDate(slot.Start)</td>
+                <td>@FormatDate(slot.End)</td>
+                <td class="text-end">@minutes min</td>
+                @if (isAdmin)
+                {
+                    <td>@slot.HealthcareWorkerId</td>
+                }
+                <td>
+                    @if (slot.IsBooked)
+                    {
+                        <span class="badge bg-secondary">Booked</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Free</span>
+                    }
+                </td>
+                <td class="text-nowrap">
+                    <a asp-action="Details" asp-route-id="@slot.Id" class="btn btn-sm btn-outline-secondary">Details</a>
+                    <a asp-action="Edit" asp-route-id="@slot.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@slot.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
