@@ -29,9 +29,9 @@ public class AppointmentController : Controller
                 _logger.LogError("[AppointmentController] appointment list not found while executing _repository.GetAll()");
                 return NotFound("Appointment list not found");
             }
-            return View(new AppointmentIndexViewModel
+            return View(new AppointmentViewModel
             {
-                ViewMode = AppointmentIndexMode.Admin,
+                ViewMode = AppointmentViewMode.Admin,
                 Appointments = all
             });
         }
@@ -46,9 +46,9 @@ public class AppointmentController : Controller
                 _logger.LogError("[AppointmentController] appointment list not found while executing _repository.GetByClientId() for ClientId {ClientId:0000}", clientId.Value);
                 return NotFound("Appointment list not found");
             }
-            return View(new AppointmentIndexViewModel
+            return View(new AppointmentViewModel
             {
-                ViewMode = AppointmentIndexMode.Client,
+                ViewMode = AppointmentViewMode.Client,
                 Appointments = clientAppointments
             });
         }
@@ -63,9 +63,9 @@ public class AppointmentController : Controller
                 _logger.LogError("[AppointmentController] appointment list not found while executing _repository.GetByHealthcareWorkerId() for HealthcareWorkerId {HealthcareWorkerId:0000}", workerId.Value);
                 return NotFound("Appointment list not found");
             }
-            return View(new AppointmentIndexViewModel
+            return View(new AppointmentViewModel
             {
-                ViewMode = AppointmentIndexMode.Worker,
+                ViewMode = AppointmentViewMode.Worker,
                 Appointments = workerAppointments
             });
         }

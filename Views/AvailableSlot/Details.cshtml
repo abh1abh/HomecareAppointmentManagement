@@ -1,0 +1,57 @@
+@using HomecareAppointmentManagment.Infrastructure
+@model HomecareAppointmentManagment.Models.AvailableSlot
+
+@{
+    ViewData["Title"] = "Available Slot Details";
+}
+
+<h2 class="mb-3">Available Slot Details</h2>
+
+@if (Model is null)
+{
+    <div class="alert alert-danger">Slot not found.</div>
+}
+else
+{
+    <dl class="row">
+        <dt class="col-sm-3">Id</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
+        <dt class="col-sm-3">Start</dt>
+        <dd class="col-sm-9">
+            @Model.Start.ToString("yyyy-MM-dd HH:mm")
+        </dd>
+
+        <dt class="col-sm-3">End</dt>
+        <dd class="col-sm-9">
+            @Model.End.ToString("yyyy-MM-dd HH:mm")
+        </dd>
+
+        <dt class="col-sm-3">Healthcare worker</dt>
+        <dd class="col-sm-9">
+            @if (Model.HealthcareWorker is not null)
+            {
+                @Model.HealthcareWorker.Name <span class="text-muted">(@Model.HealthcareWorkerId)</span>
+            }
+            else
+            {
+                @Model.HealthcareWorkerId
+            }
+        </dd>
+
+        <dt class="col-sm-3">Booked</dt>
+        <dd class="col-sm-9">
+            <span class="badge bg-@(Model.IsBooked ? "danger" : "success")">
+                @(Model.IsBooked ? "Yes" : "No")
+            </span>
+        </dd>
+
+
+    </dl>
+
+    <div class="mt-4 d-flex gap-2">
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">Delete</a>
+    </div>
+}

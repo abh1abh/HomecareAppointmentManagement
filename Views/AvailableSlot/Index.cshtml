@@ -1,9 +1,8 @@
 @using System.Globalization
-@model IEnumerable<HomecareAppointmentManagment.Models.AvailableSlot>
+@model AvailableSlotViewModel
 
 @{
-    var isAdmin = User.IsInRole("Admin");
-    ViewData["Title"] = isAdmin ? "All Slots" : "My Schedule";
+    ViewData["Title"] = Model.IsAdmin ? "All Slots" : "My Schedule";
     string FormatDate(DateTime dt) => dt.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
 }
 
@@ -17,18 +16,18 @@
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div>
         <span class="badge bg-success me-2">Free</span>
-        <span class="badge bg-secondary">Booked</span>
+        <span class="badge bg-danger me-2">Booked</span>
     </div>
     <div>
         <a asp-action="Create" class="btn btn-primary">Create slot</a>
     </div>
 </div>
 
-@if (Model is null || !Model.Any())
+@if (Model.AvailableSlots is null || !Model.AvailableSlots.Any())
 {
     <div class="alert alert-info">
         No slots found.
-        @if (!isAdmin)
+        @if (!Model.IsAdmin)
         {
             <span>Create your first slot with the button above.</span>
         }
@@ -42,7 +41,7 @@ else
                 <th scope="col">Start</th>
                 <th scope="col">End</th>
                 <th scope="col" class="text-end">Duration</th>
-                @if (isAdmin)
+                @if (Model.IsAdmin)
                 {
                     <th scope="col">Worker Id</th>
                 }
@@ -51,7 +50,7 @@ else
             </tr>
         </thead>
         <tbody>
-        @foreach (var slot in Model.OrderBy(s => s.Start))
+        @foreach (var slot in Model.AvailableSlots.OrderBy(s => s.Start))
         {
             var duration = (slot.End - slot.Start);
             var minutes = (int)Math.Round(duration.TotalMinutes);
@@ -59,14 +58,14 @@ else
                 <td>@FormatDate(slot.Start)</td>
                 <td>@FormatDate(slot.End)</td>
                 <td class="text-end">@minutes min</td>
-                @if (isAdmin)
+                @if (Model.IsAdmin)
                 {
                     <td>@slot.HealthcareWorkerId</td>
                 }
                 <td>
                     @if (slot.IsBooked)
                     {
-                        <span class="badge bg-secondary">Booked</span>
+                        <span class="badge bg-danger">Booked</span>
                     }
                     else
                     {

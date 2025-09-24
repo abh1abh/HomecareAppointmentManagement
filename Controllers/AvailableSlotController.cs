@@ -1,6 +1,7 @@
 using HomecareAppointmentManagement.DAL;
 using HomecareAppointmentManagment.Infrastructure; // <-- add
 using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagment.ViewModels;
 using Microsoft.AspNetCore.Authorization;           // <-- add
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,14 +24,26 @@ public class AvailableSlotController : Controller
         if (User.IsAdmin())
         {
             var all = await _repository.GetAll();
-            return View(all);
+            return View(new AvailableSlotViewModel
+            {
+                IsAdmin = true,
+                AvailableSlots = all ?? Enumerable.Empty<AvailableSlot>()
+            });
         }
 
-        var myId = User.TryGetHealthcareWorkerId();
-        if (myId is null) return Forbid();
+        var workerId = User.TryGetHealthcareWorkerId();
+        if (workerId is null) return Forbid();
 
-        var mine = await _repository.GetByWorkerId(myId.Value); // make sure this method returns a list
-        return View(mine);
+        var workerslots = await _repository.GetByWorkerId(workerId.Value);
+        if (workerslots == null) {
+            _logger.LogError("[AvailableSlotController] available slot list not found while executing _repository.GetByWorkerId() for HealthcareWorkerId {HealthcareWorkerId:0000}", workerId.Value);
+            return NotFound();
+        }
+        return View(new AvailableSlotViewModel
+        {
+            IsAdmin = false,
+            AvailableSlots = workerslots
+        });
     }
 
     public async Task<IActionResult> Details(int id)
@@ -97,14 +110,59 @@ public class AvailableSlotController : Controller
 
         if (!ModelState.IsValid) return View(slot);
 
-        var ok = await _repository.Update(slot);
+        if (User.IsAdmin())
+        {
+            existing.HealthcareWorkerId = slot.HealthcareWorkerId;
+            existing.Start = slot.Start;
+            existing.End = slot.End;
+            existing.IsBooked = slot.IsBooked;
+        }
+        else
+        {
+            // Worker rules
+            if (!existing.IsBooked)
+            {
+                existing.Start = slot.Start;
+                existing.End = slot.End;
+                existing.IsBooked = false;
+            }
+        }
+        
+        var ok = await _repository.Update(existing);
         if (!ok)
         {
-            _logger.LogError("[AvailableSlotController] update failed {@slot}", slot);
+            _logger.LogError("[AvailableSlotController] update failed {@slot}", existing);
             return View(slot);
         }
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Cancel(int id)
+    {
+        var existing = await _repository.GetById(id);
+        if (existing == null) return NotFound();
+
+        if (!User.IsAdmin() && existing.HealthcareWorkerId != User.TryGetHealthcareWorkerId())
+            return Forbid();
+
+        if (!existing.IsBooked)
+        {
+            TempData["Message"] = "Slot is already not booked.";
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        existing.IsBooked = false;
+        var ok = await _repository.Update(existing);
+        if (!ok)
+        {
+            _logger.LogError("[AvailableSlotController] cancel failed for {id}", id);
+            return RedirectToAction(nameof(Details), new { id });
+        }
+
+        return RedirectToAction(nameof(Details), new { id });
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> Delete(int id)
