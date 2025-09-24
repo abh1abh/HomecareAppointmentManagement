@@ -6,15 +6,22 @@ namespace HomecareAppointmentManagment.Controllers;
 public class ChangeLogController : Controller
 {
     private readonly IChangeLogRepository _repository;
+    private readonly ILogger<ChangeLogController> _logger; // Added
 
-    public ChangeLogController(IChangeLogRepository repository)
+    public ChangeLogController(IChangeLogRepository repository, ILogger<ChangeLogController> logger) // Modified
     {
         _repository = repository;
+        _logger = logger; // Added
     }
 
     public async Task<IActionResult> Index()
     {
         var logs = await _repository.GetAll();
+        if (logs == null) // Added null check
+        {
+            _logger.LogError("[ChangeLogController] change log list not found while executing _repository.GetAll()");
+            return NotFound("Change log list not found");
+        }
         return View(logs);
     }
 
@@ -23,7 +30,8 @@ public class ChangeLogController : Controller
         var log = await _repository.GetById(id);
         if (log == null)
         {
-            return NotFound();
+            _logger.LogError("[ChangeLogController] change log not found while executing _repository.GetById() for ChangeLogId {ChangeLogId:0000}", id);
+            return NotFound("Change log not found");
         }
         return View(log);
     }

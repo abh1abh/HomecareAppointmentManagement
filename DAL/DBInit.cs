@@ -11,7 +11,7 @@ public static class DBInit
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
-        if (!context.Clients.Any() && !context.HealthcarePersonnel.Any())
+        if (!context.Clients.Any() && !context.HealthcareWorkers.Any())
         {
             // Clients
             var clients = new List<Client>
@@ -21,11 +21,11 @@ public static class DBInit
                 new Client { Name = "Bob Johnson", Address = "789 Pine Rd", Phone = "555-9012" }
             };
 
-            // Healthcare Personnel
-            var staff = new List<HealthcarePersonnel>
+            // Healthcare Workers
+            var staff = new List<HealthcareWorker>
             {
-                new HealthcarePersonnel { Name = "Alice Brown", Address = "12 Health St", Phone = "555-1111" },
-                new HealthcarePersonnel { Name = "David Wilson", Address = "34 Care Ave", Phone = "555-2222" }
+                new HealthcareWorker { Name = "Alice Brown", Address = "12 Health St", Phone = "555-1111" },
+                new HealthcareWorker { Name = "David Wilson", Address = "34 Care Ave", Phone = "555-2222" }
             };
 
             context.AddRange(clients);
@@ -38,7 +38,7 @@ public static class DBInit
                 new Appointment
                 {
                     ClientId = clients[0].ClientId,
-                    HealthcarePersonnelId = staff[0].HealthcarePersonnelId,
+                    HealthcareWorkerId = staff[0].HealthcareWorkerId,
                     Start = DateTime.Today.AddHours(9),
                     End = DateTime.Today.AddHours(10),
                     Notes = "Medication check and blood pressure",
@@ -51,7 +51,7 @@ public static class DBInit
                 new Appointment
                 {
                     ClientId = clients[1].ClientId,
-                    HealthcarePersonnelId = staff[1].HealthcarePersonnelId,
+                    HealthcareWorkerId = staff[1].HealthcareWorkerId,
                     Start = DateTime.Today.AddHours(11),
                     End = DateTime.Today.AddHours(12),
                     Notes = "Assistance with mobility exercises",
@@ -70,14 +70,14 @@ public static class DBInit
             {
                 new AvailableSlot
                 {
-                    HealthcarePersonnelId = staff[0].HealthcarePersonnelId,
+                    HealthcareWorkerId = staff[0].HealthcareWorkerId,
                     Start = DateTime.Today.AddHours(14),
                     End = DateTime.Today.AddHours(15),
                     IsBooked = false
                 },
                 new AvailableSlot
                 {
-                    HealthcarePersonnelId = staff[1].HealthcarePersonnelId,
+                    HealthcareWorkerId = staff[1].HealthcareWorkerId,
                     Start = DateTime.Today.AddHours(15),
                     End = DateTime.Today.AddHours(16),
                     IsBooked = true

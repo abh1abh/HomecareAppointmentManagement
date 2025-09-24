@@ -2,9 +2,9 @@ using System;
 
 namespace HomecareAppointmentManagment.Models;
 
-public class HealthcarePersonnel
+public class HealthcareWorker
 {
-    public int HealthcarePersonnelId { get; set; }
+    public int HealthcareWorkerId { get; set; }
     public string Name { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public string Phone { get; set; } = string.Empty;

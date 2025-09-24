@@ -7,54 +7,114 @@ namespace HomecareAppointmentManagement.DAL;
 public class AppointmentRepository : IAppointmentRepository
 {
     private readonly AppDbContext _db;
+    private readonly ILogger<AppointmentRepository> _logger; // Added
 
-    public AppointmentRepository(AppDbContext db)
+    public AppointmentRepository(AppDbContext db, ILogger<AppointmentRepository> logger) // Modified
     {
         _db = db;
+        _logger = logger; // Added
     }
 
-    public async Task<IEnumerable<Appointment>> GetAll()
+    public async Task<IEnumerable<Appointment>?> GetAll() // Modified return type
     {
-        return await _db.Appointments.ToListAsync();
+        try
+        {
+            return await _db.Appointments.ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AppointmentRepository] appointment ToListAsync() failed when GetAll(), error messager: {e}", e.Message);
+            return null;
+        }
     }
 
     public async Task<Appointment?> GetById(int id)
     {
-        return await _db.Appointments.FindAsync(id);
+        try
+        {
+            return await _db.Appointments.FindAsync(id);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AppointmentRepository] appointment FindAsync(id) failed when GetById() for AppointmentId {AppointmentId:0000}, error messager: {e}", id, e.Message);
+            return null;
+        }
     }
 
-    public async Task Create(Appointment appointment)
+    public async Task<bool> Create(Appointment appointment) // Modified return type
     {
-        await _db.Appointments.AddAsync(appointment);
-        await _db.SaveChangesAsync();
+        try
+        {
+            await _db.Appointments.AddAsync(appointment);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AppointmentRepository] appointment AddAsync() failed when Create(), error messager: {e}", e.Message);
+            return false;
+        }
     }
 
-    public async Task Update(Appointment appointment)
+    public async Task<bool> Update(Appointment appointment) // Modified return type
     {
-        _db.Appointments.Update(appointment);
-        await _db.SaveChangesAsync();
+        try
+        {
+            _db.Appointments.Update(appointment);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AppointmentRepository] appointment Update() failed when Update() for AppointmentId {AppointmentId:0000}, error messager: {e}", appointment.Id, e.Message);
+            return false;
+        }
     }
 
     public async Task<bool> Delete(int id)
     {
-        var item = await _db.Appointments.FindAsync(id);
-        if (item == null)
+        try
         {
+            var item = await _db.Appointments.FindAsync(id);
+            if (item == null)
+            {
+                return false;
+            }
+
+            _db.Appointments.Remove(item);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AppointmentRepository] appointment Delete() failed when Delete() for AppointmentId {AppointmentId:0000}, error messager: {e}", id, e.Message);
             return false;
         }
-
-        _db.Appointments.Remove(item);
-        await _db.SaveChangesAsync();
-        return true;
     }
 
-    public async Task<IEnumerable<Appointment>> GetByClientId(int clientId)
+    public async Task<IEnumerable<Appointment>?> GetByClientId(int clientId) // Modified return type
     {
-        return await _db.Appointments.Where(a => a.ClientId == clientId).ToListAsync();
+        try
+        {
+            return await _db.Appointments.Where(a => a.ClientId == clientId).ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AppointmentRepository] appointment Where(a => a.ClientId == clientId).ToListAsync() failed when GetByClientId() for ClientId {ClientId:0000}, error messager: {e}", clientId, e.Message);
+            return null;
+        }
     }
 
-    public async Task<IEnumerable<Appointment>> GetByHealthcarePersonnelId(int personnelId)
+    public async Task<IEnumerable<Appointment>?> GetByHealthcarePersonnelId(int personnelId) // Modified return type
     {
-        return await _db.Appointments.Where(a => a.HealthcarePersonnelId == personnelId).ToListAsync();
+        try
+        {
+            return await _db.Appointments.Where(a => a.HealthcareWorkerId == personnelId).ToListAsync();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("[AppointmentRepository] appointment Where(a => a.HealthcareWorkerId == personnelId).ToListAsync() failed when GetByHealthcareWorkerId() for WorkerId {WorkerId:0000}, error messager: {e}", personnelId, e.Message);
+            return null;
+        }
     }
 }

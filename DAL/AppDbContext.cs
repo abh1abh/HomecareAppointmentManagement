@@ -12,7 +12,7 @@ namespace HomecareAppointmentManagment.DAL
         }
 
         public DbSet<Client> Clients { get; set; }
-        public DbSet<HealthcarePersonnel> HealthcarePersonnel { get; set; }
+        public DbSet<HealthcareWorker> HealthcareWorkers { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
         public DbSet<AppointmentTask> AppointmentTasks { get; set; }
         public DbSet<AvailableSlot> AvailableSlots { get; set; }

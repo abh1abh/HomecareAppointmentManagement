@@ -14,7 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 });
 
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
-builder.Services.AddScoped<IHealthcarePersonnelRepository, HealthcarePersonnelRepository>();
+builder.Services.AddScoped<IHealthcareWorkerRepository, HealthcareWorkerRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAppointmentTaskRepository, AppointmentTaskRepository>();
 builder.Services.AddScoped<IAvailableSlotRepository, AvailableSlotRepository>();
