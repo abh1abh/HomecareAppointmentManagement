@@ -15,7 +15,7 @@ public class HealthcareWorkerController : Controller
         _logger = logger; // Added
     }
 
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> Table()
     {
         var healthcareWorkers = await _repository.GetAll();
         if (healthcareWorkers == null) // Added null check

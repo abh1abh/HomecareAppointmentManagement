@@ -1,0 +1,27 @@
+<table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Worker ID</th>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var worker in Model)
+            {
+                <tr>
+                    <td>@worker.HealthcareWorkerId</td>
+                    <td>@worker.Name</td>
+                    <td>@worker.Phone</td>
+                    <td>@worker.Address</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@worker.HealthcareWorkerId" class="btn btn-primary btn-sm">Edit</a>
+                        <a asp-action="Details" asp-route-id="@worker.HealthcareWorkerId" class="btn btn-info btn-sm">Details</a>
+                        <a asp-action="Delete" asp-route-id="@worker.HealthcareWorkerId" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
