@@ -1,4 +1,5 @@
 using HomecareAppointmentManagement.DAL;
+using HomecareAppointmentManagment.Models;
 using HomecareAppointmentManagment.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,15 +9,22 @@ public class ClientController : Controller
 {
     
     private readonly IClientRepository _clientRepository;
+    private readonly ILogger<ClientController> _logger;
 
-    public ClientController(IClientRepository clientRepository)
+    public ClientController(IClientRepository clientRepository, ILogger<ClientController> logger)
     {
         _clientRepository = clientRepository;
+        _logger = logger;
     }
 
    public async Task<IActionResult> Table()
     {
         var clients = await _clientRepository.GetAll();
+        if (clients == null)
+        {
+            _logger.LogError("[ClientController] client list not found while executing _clientRepository.GetAll()");
+            return NotFound("Client list not found");
+        }
         var clientsViewModel = new ClientViewModel(clients, "Table");
         return View(clientsViewModel);
     }
@@ -26,7 +34,8 @@ public class ClientController : Controller
         var client = await _clientRepository.GetClientById(id);
         if (client == null)
         {
-            return NotFound();
+            _logger.LogError("[ClientController] client not found while executing _clientRepository.GetClientById() for ClientId {ClientId:0000}", id);
+            return NotFound("Client not found");
         }
         return View(client);
     }
@@ -38,10 +47,16 @@ public class ClientController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(HomecareAppointmentManagment.Models.Client client)
+    public async Task<IActionResult> Create(Client client)
     {
-        await _clientRepository.Create(client);
-        return RedirectToAction(nameof(Table));
+        if (ModelState.IsValid)
+        {
+            bool returnOk = await _clientRepository.Create(client);
+            if (returnOk)
+                return RedirectToAction(nameof(Table));
+        }
+        _logger.LogError("[ClientController] client creation failed {@client}", client);
+        return View(client);
     }
 
     [HttpGet]
@@ -50,20 +65,23 @@ public class ClientController : Controller
         var client = await _clientRepository.GetClientById(id);
         if (client == null)
         {
-            return NotFound();
+            _logger.LogError("[ClientController] client not found when editing for ClientId {ClientId:0000}", id);
+            return NotFound("Client not found");
         }
         return View(client);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(int id, HomecareAppointmentManagment.Models.Client client)
+    public async Task<IActionResult> Edit(int id, Client client)
     {
-        if (id != client.ClientId)
+        if (ModelState.IsValid)
         {
-            return NotFound();
+            bool returnOk = await _clientRepository.Update(client);
+            if (returnOk)
+                return RedirectToAction(nameof(Table));
         }
-        await _clientRepository.Update(client);
-        return RedirectToAction(nameof(Table));
+        _logger.LogError("[ClientController] client update failed for ClientId {ClientId:0000}, {@client}", id, client);
+        return View(client);
     }
 
     [HttpGet]
@@ -72,7 +90,8 @@ public class ClientController : Controller
         var client = await _clientRepository.GetClientById(id);
         if (client == null)
         {
-            return NotFound();
+            _logger.LogError("[ClientController] client not found when deleting for ClientId {ClientId:0000}", id);
+            return NotFound("Client not found");
         }
         return View(client);
     }
@@ -80,7 +99,12 @@ public class ClientController : Controller
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        await _clientRepository.Delete(id);
+        bool returnOk = await _clientRepository.Delete(id);
+        if (!returnOk)
+        {
+            _logger.LogError("[ClientController] client deletion failed for ClientId {ClientId:0000}", id);
+            return BadRequest("Client deletion failed");
+        }
         return RedirectToAction(nameof(Table));
     }
 }
