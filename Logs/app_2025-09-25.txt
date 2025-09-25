@@ -190,3 +190,219 @@ Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving 
 2025-09-25 10:42:54.258 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/bootstrap.js - 304 null text/javascript 6.4246ms
 2025-09-25 10:42:54.258 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery.validate.unobtrusive.js - 304 null text/javascript 6.4207ms
 2025-09-25 10:42:54.258 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery.js - 304 null text/javascript 6.503ms
+2025-09-25 10:48:42.407 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:48:44.839 +02:00 [INF] Now listening on: http://localhost:5191
+2025-09-25 10:48:44.848 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-09-25 10:48:44.850 +02:00 [INF] Hosting environment: Development
+2025-09-25 10:48:44.852 +02:00 [INF] Content root path: /Users/alexanderhoyskel/VSCode/HomecareAppointmentManagement
+2025-09-25 10:48:45.162 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/ - null null
+2025-09-25 10:48:45.197 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:48:45.205 +02:00 [INF] Route matched with {action = "Index", controller = "Home", page = "", area = ""}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller HomecareAppointmentManagment.Controllers.HomeController (HomecareAppointmentManagement).
+2025-09-25 10:48:45.212 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:48:45.368 +02:00 [INF] Executed ViewResult - view Index executed in 152.9388ms.
+2025-09-25 10:48:45.371 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement) in 164.6886ms
+2025-09-25 10:48:45.371 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:48:45.379 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/ - 200 null text/html; charset=utf-8 220.2629ms
+2025-09-25 10:48:46.881 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot - null null
+2025-09-25 10:48:46.893 +02:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (HealthcareWorker|Admin)
+2025-09-25 10:48:46.899 +02:00 [INF] AuthenticationScheme: Identity.Application was challenged.
+2025-09-25 10:48:46.899 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 302 0 null 18.0229ms
+2025-09-25 10:48:46.923 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - null null
+2025-09-25 10:48:46.926 +02:00 [INF] Executing endpoint '/Account/Login'
+2025-09-25 10:48:46.938 +02:00 [INF] Route matched with {page = "/Account/Login", area = "Identity", action = "", controller = ""}. Executing page /Account/Login
+2025-09-25 10:48:46.947 +02:00 [INF] Executing handler method HomecareAppointmentManagement.Areas.Identity.Pages.Account.LoginModel.OnGetAsync - ModelState is "Valid"
+2025-09-25 10:48:46.951 +02:00 [INF] AuthenticationScheme: Identity.External signed out.
+2025-09-25 10:48:46.951 +02:00 [INF] Executed handler method OnGetAsync, returned result .
+2025-09-25 10:48:46.952 +02:00 [INF] Executing an implicit handler method - ModelState is "Valid"
+2025-09-25 10:48:46.952 +02:00 [INF] Executed an implicit handler method, returned result Microsoft.AspNetCore.Mvc.RazorPages.PageResult.
+2025-09-25 10:48:46.974 +02:00 [INF] Executed page /Account/Login in 35.946ms
+2025-09-25 10:48:46.974 +02:00 [INF] Executed endpoint '/Account/Login'
+2025-09-25 10:48:46.974 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - 200 null text/html; charset=utf-8 51.6232ms
+2025-09-25 10:48:47.027 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - null null
+2025-09-25 10:48:47.028 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - null null
+2025-09-25 10:48:47.030 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - 404 0 null 1.3821ms
+2025-09-25 10:48:47.030 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - 404 0 null 2.164ms
+2025-09-25 10:48:47.030 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js, Response status code: 404
+2025-09-25 10:48:47.031 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js, Response status code: 404
+2025-09-25 10:48:48.797 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/Identity/Account/Login - null null
+2025-09-25 10:48:48.805 +02:00 [INF] Executing endpoint '/Account/Login'
+2025-09-25 10:48:48.807 +02:00 [INF] Route matched with {page = "/Account/Login", area = "Identity", action = "", controller = ""}. Executing page /Account/Login
+2025-09-25 10:48:48.819 +02:00 [INF] Executing handler method HomecareAppointmentManagement.Areas.Identity.Pages.Account.LoginModel.OnGetAsync - ModelState is "Valid"
+2025-09-25 10:48:48.820 +02:00 [INF] AuthenticationScheme: Identity.External signed out.
+2025-09-25 10:48:48.820 +02:00 [INF] Executed handler method OnGetAsync, returned result .
+2025-09-25 10:48:48.820 +02:00 [INF] Executing an implicit handler method - ModelState is "Valid"
+2025-09-25 10:48:48.820 +02:00 [INF] Executed an implicit handler method, returned result Microsoft.AspNetCore.Mvc.RazorPages.PageResult.
+2025-09-25 10:48:48.825 +02:00 [INF] Executed page /Account/Login in 17.4772ms
+2025-09-25 10:48:48.825 +02:00 [INF] Executed endpoint '/Account/Login'
+2025-09-25 10:48:48.825 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/Identity/Account/Login - 200 null text/html; charset=utf-8 28.1632ms
+2025-09-25 10:48:48.848 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - null null
+2025-09-25 10:48:48.848 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - null null
+2025-09-25 10:48:48.848 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - 404 0 null 0.6823ms
+2025-09-25 10:48:48.848 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - 404 0 null 0.6824ms
+2025-09-25 10:48:48.848 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js, Response status code: 404
+2025-09-25 10:48:48.849 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js, Response status code: 404
+2025-09-25 10:48:52.159 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5191/Identity/Account/Login - application/x-www-form-urlencoded 267
+2025-09-25 10:48:52.160 +02:00 [INF] Executing endpoint '/Account/Login'
+2025-09-25 10:48:52.160 +02:00 [INF] Route matched with {page = "/Account/Login", area = "Identity", action = "", controller = ""}. Executing page /Account/Login
+2025-09-25 10:48:52.183 +02:00 [INF] Executing handler method HomecareAppointmentManagement.Areas.Identity.Pages.Account.LoginModel.OnPostAsync - ModelState is "Valid"
+2025-09-25 10:48:52.338 +02:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2025-09-25 10:48:52.346 +02:00 [INF] User logged in.
+2025-09-25 10:48:52.347 +02:00 [INF] Executed handler method OnPostAsync, returned result Microsoft.AspNetCore.Mvc.LocalRedirectResult.
+2025-09-25 10:48:52.347 +02:00 [INF] Executing LocalRedirectResult, redirecting to /.
+2025-09-25 10:48:52.347 +02:00 [INF] Executed page /Account/Login in 187.0423ms
+2025-09-25 10:48:52.347 +02:00 [INF] Executed endpoint '/Account/Login'
+2025-09-25 10:48:52.349 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5191/Identity/Account/Login - 302 0 null 190.4892ms
+2025-09-25 10:48:52.353 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/ - null null
+2025-09-25 10:48:52.355 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:48:52.355 +02:00 [INF] Route matched with {action = "Index", controller = "Home", page = "", area = ""}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller HomecareAppointmentManagment.Controllers.HomeController (HomecareAppointmentManagement).
+2025-09-25 10:48:52.356 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:48:52.358 +02:00 [INF] Executed ViewResult - view Index executed in 1.9275ms.
+2025-09-25 10:48:52.358 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement) in 2.092ms
+2025-09-25 10:48:52.358 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:48:52.358 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/ - 200 null text/html; charset=utf-8 4.2358ms
+2025-09-25 10:48:53.025 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot - null null
+2025-09-25 10:48:53.033 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:48:53.044 +02:00 [INF] Route matched with {action = "Index", controller = "AvailableSlot", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller HomecareAppointmentManagment.Controllers.AvailableSlotController (HomecareAppointmentManagement).
+2025-09-25 10:48:53.096 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:48:53.102 +02:00 [INF] Executed ViewResult - view Index executed in 5.695ms.
+2025-09-25 10:48:53.102 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement) in 57.1632ms
+2025-09-25 10:48:53.102 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:48:53.102 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 200 null text/html; charset=utf-8 76.5798ms
+2025-09-25 10:48:56.023 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot/Details/1 - null null
+2025-09-25 10:48:56.032 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Details (HomecareAppointmentManagement)'
+2025-09-25 10:48:56.038 +02:00 [INF] Route matched with {action = "Details", controller = "AvailableSlot", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Details(Int32) on controller HomecareAppointmentManagment.Controllers.AvailableSlotController (HomecareAppointmentManagement).
+2025-09-25 10:48:56.054 +02:00 [INF] Executing ViewResult, running view Details.
+2025-09-25 10:48:56.078 +02:00 [INF] Executed ViewResult - view Details executed in 24.4597ms.
+2025-09-25 10:48:56.078 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.AvailableSlotController.Details (HomecareAppointmentManagement) in 39.1703ms
+2025-09-25 10:48:56.078 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Details (HomecareAppointmentManagement)'
+2025-09-25 10:48:56.078 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot/Details/1 - 200 null text/html; charset=utf-8 54.7066ms
+2025-09-25 10:51:32.234 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:51:33.370 +02:00 [ERR] Failed executing DbCommand (1ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (DbType = DateTime), @p3='?' (DbType = Int32), @p4='?' (Size = 35), @p5='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Appointments" ("AvailableSlotId", "ClientId", "End", "HealthcareWorkerId", "Notes", "Start")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5)
+RETURNING "Id";
+2025-09-25 10:51:33.387 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'HomecareAppointmentManagment.DAL.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2025-09-25 10:53:54.978 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:53:56.126 +02:00 [ERR] Failed executing DbCommand (1ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (DbType = DateTime), @p3='?' (DbType = Int32), @p4='?' (Size = 35), @p5='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Appointments" ("AvailableSlotId", "ClientId", "End", "HealthcareWorkerId", "Notes", "Start")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5)
+RETURNING "Id";
+2025-09-25 10:53:56.143 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'HomecareAppointmentManagment.DAL.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2025-09-25 10:55:21.701 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:55:23.342 +02:00 [INF] Now listening on: http://localhost:5191
+2025-09-25 10:55:23.345 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-09-25 10:55:23.346 +02:00 [INF] Hosting environment: Development
+2025-09-25 10:55:23.346 +02:00 [INF] Content root path: /Users/alexanderhoyskel/VSCode/HomecareAppointmentManagement
+2025-09-25 10:55:23.628 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/ - null null
+2025-09-25 10:55:23.661 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:55:23.666 +02:00 [INF] Route matched with {action = "Index", controller = "Home", page = "", area = ""}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller HomecareAppointmentManagment.Controllers.HomeController (HomecareAppointmentManagement).
+2025-09-25 10:55:23.669 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:55:23.704 +02:00 [INF] Executed ViewResult - view Index executed in 35.0173ms.
+2025-09-25 10:55:23.705 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement) in 39.2429ms
+2025-09-25 10:55:23.705 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:55:23.707 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/ - 200 null text/html; charset=utf-8 80.6947ms
+2025-09-25 10:57:39.474 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/HealthcareWorker/Table - null null
+2025-09-25 10:57:39.531 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.HealthcareWorkerController.Table (HomecareAppointmentManagement)'
+2025-09-25 10:57:39.542 +02:00 [INF] Route matched with {action = "Table", controller = "HealthcareWorker", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Table() on controller HomecareAppointmentManagment.Controllers.HealthcareWorkerController (HomecareAppointmentManagement).
+2025-09-25 10:57:39.585 +02:00 [INF] Executing ViewResult, running view Table.
+2025-09-25 10:57:39.647 +02:00 [INF] Executed ViewResult - view Table executed in 64.4303ms.
+2025-09-25 10:57:39.647 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.HealthcareWorkerController.Table (HomecareAppointmentManagement) in 105.2687ms
+2025-09-25 10:57:39.647 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.HealthcareWorkerController.Table (HomecareAppointmentManagement)'
+2025-09-25 10:57:39.656 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/HealthcareWorker/Table - 200 null text/html; charset=utf-8 183.4635ms
+2025-09-25 10:57:40.034 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot - null null
+2025-09-25 10:57:40.043 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:57:40.045 +02:00 [INF] Route matched with {action = "Index", controller = "AvailableSlot", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller HomecareAppointmentManagment.Controllers.AvailableSlotController (HomecareAppointmentManagement).
+2025-09-25 10:57:40.086 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:57:40.096 +02:00 [INF] Executed ViewResult - view Index executed in 9.2929ms.
+2025-09-25 10:57:40.096 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement) in 50.6392ms
+2025-09-25 10:57:40.096 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:57:40.096 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 200 null text/html; charset=utf-8 61.9139ms
+2025-09-25 10:57:40.748 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/Appointment - null null
+2025-09-25 10:57:40.752 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.AppointmentController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:57:40.757 +02:00 [INF] Route matched with {action = "Index", controller = "Appointment", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller HomecareAppointmentManagment.Controllers.AppointmentController (HomecareAppointmentManagement).
+2025-09-25 10:57:40.791 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:57:40.818 +02:00 [INF] Executed ViewResult - view Index executed in 26.9862ms.
+2025-09-25 10:57:40.818 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.AppointmentController.Index (HomecareAppointmentManagement) in 60.9056ms
+2025-09-25 10:57:40.818 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.AppointmentController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:57:40.818 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/Appointment - 200 null text/html; charset=utf-8 70.6501ms
+2025-09-25 10:57:54.124 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot - null null
+2025-09-25 10:57:54.128 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:57:54.128 +02:00 [INF] Route matched with {action = "Index", controller = "AvailableSlot", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller HomecareAppointmentManagment.Controllers.AvailableSlotController (HomecareAppointmentManagement).
+2025-09-25 10:57:54.135 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:57:54.138 +02:00 [INF] Executed ViewResult - view Index executed in 3.6142ms.
+2025-09-25 10:57:54.138 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement) in 10.2301ms
+2025-09-25 10:57:54.138 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:57:54.139 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 200 null text/html; charset=utf-8 14.8162ms

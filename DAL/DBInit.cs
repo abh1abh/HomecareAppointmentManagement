@@ -163,7 +163,7 @@ public static class DBInit
                 Start = DateTime.Today.AddHours(9),
                 End   = DateTime.Today.AddHours(10),
                 Notes = "Medication check and blood pressure",
-                AvailableSlot = slots[0],
+                // AvailableSlot = slots[0],
                 AppointmentTasks = new List<AppointmentTask>
                 {
                     new AppointmentTask { Description = "Check blood pressure" },
@@ -188,7 +188,7 @@ public static class DBInit
         await context.SaveChangesAsync();
 
         // 3) Mark the linked slots as booked (optional convenience flag)
-        slots[0].IsBooked = true;
+        slots[0].IsBooked = false;
         slots[1].IsBooked = true;
         await context.SaveChangesAsync();
 
