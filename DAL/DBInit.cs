@@ -138,15 +138,15 @@ public static class DBInit
             new AvailableSlot
             {
                 HealthcareWorkerId = workers[0].HealthcareWorkerId,
-                Start = DateTime.Today.AddHours(14),
-                End   = DateTime.Today.AddHours(15),
+                Start = new DateTime(2025, 12, 9, 14, 0, 0), // Dec 9, 2025 at 14:00
+                End   = new DateTime(2025, 12, 9, 15, 0, 0), // Dec 9, 2025 at 15:00
                 IsBooked = false
             },
             new AvailableSlot
             {
                 HealthcareWorkerId = workers[1].HealthcareWorkerId,
-                Start = DateTime.Today.AddHours(15),
-                End   = DateTime.Today.AddHours(16),
+                Start = new DateTime(2025, 12, 10, 14, 0, 0), // Dec 10, 2025 at 14:00
+                End   = new DateTime(2025, 12, 10, 15, 0, 0), // Dec 10, 2025 at 15:00
                 IsBooked = false // set false for now; will flip after linking
             }
         };
@@ -156,20 +156,6 @@ public static class DBInit
         // 2) Create appointments and LINK BOTH
         var appts = new List<Appointment>
         {
-            new Appointment
-            {
-                ClientId = clients[0].ClientId,
-                HealthcareWorkerId = workers[0].HealthcareWorkerId,
-                Start = DateTime.Today.AddHours(9),
-                End   = DateTime.Today.AddHours(10),
-                Notes = "Medication check and blood pressure",
-                // AvailableSlot = slots[0],
-                AppointmentTasks = new List<AppointmentTask>
-                {
-                    new AppointmentTask { Description = "Check blood pressure" },
-                    new AppointmentTask { Description = "Administer medication" }
-                }
-            },
             new Appointment
             {
                 ClientId = clients[1].ClientId,
@@ -194,8 +180,7 @@ public static class DBInit
 
         // 4) Change logs (safe now that appt IDs exist)
         context.ChangeLogs.AddRange(
-            new ChangeLog { AppointmentId = appts[0].Id, ChangeDate = DateTime.Now, ChangedByUserId = 1, ChangeDescription = "Updated notes for medication" },
-            new ChangeLog { AppointmentId = appts[1].Id, ChangeDate = DateTime.Now, ChangedByUserId = 2, ChangeDescription = "Rescheduled due to patient request" }
+            new ChangeLog { AppointmentId = appts[0].Id, ChangeDate = DateTime.Now, ChangedByUserId = 2, ChangeDescription = "Rescheduled due to patient request" }
         );
         await context.SaveChangesAsync();
 
