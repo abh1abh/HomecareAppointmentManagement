@@ -37,7 +37,7 @@ builder.Services.AddSession();
 
 
 var loggerConfiguration = new LoggerConfiguration()
-    .WriteTo.File($"Logs/app_{DateTime.Now:yyyy-MM-dd}.txt")
+    .WriteTo.File($"Logs/app_{DateTime.Now:yyyyMMdd_HHmmss}.log")
     .MinimumLevel.Information();
 
 loggerConfiguration.Filter.ByExcluding(e => e.Properties.TryGetValue("SourceContext", out var value) &&
