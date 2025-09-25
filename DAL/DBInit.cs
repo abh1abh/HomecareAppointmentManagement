@@ -12,9 +12,9 @@ public static class DBInit
         using var scope = app.ApplicationServices.CreateScope();
         var services = scope.ServiceProvider;
 
-        var context   = services.GetRequiredService<AppDbContext>();
-        var userMgr   = services.GetRequiredService<UserManager<IdentityUser>>();
-        var roleMgr   = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var context = services.GetRequiredService<AppDbContext>();
+        var userMgr = services.GetRequiredService<UserManager<IdentityUser>>();
+        var roleMgr = services.GetRequiredService<RoleManager<IdentityRole>>();
 
         // For dev, resets db each time
         context.Database.EnsureDeleted();
@@ -28,14 +28,14 @@ public static class DBInit
 
         // Admin user
         var adminEmail = "admin@homecare.local";
-        var adminUser  = await userMgr.FindByEmailAsync(adminEmail);
+        var adminUser = await userMgr.FindByEmailAsync(adminEmail);
         if (adminUser is null)
         {
             adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
             await userMgr.CreateAsync(adminUser, "Admin123!");
             await userMgr.AddToRoleAsync(adminUser, "Admin");
         }
- 
+
 
         // Init of Clients with IdentityUser link
         var clientSeeds = new[]
@@ -132,37 +132,7 @@ public static class DBInit
         }
 
         // Init Appointments, AvailableSlots, ChangeLogs
-        var appts = new List<Appointment>
-        {
-            new Appointment
-            {
-                ClientId = clients[0].ClientId,
-                HealthcareWorkerId = workers[0].HealthcareWorkerId,
-                Start = DateTime.Today.AddHours(9),
-                End   = DateTime.Today.AddHours(10),
-                Notes = "Medication check and blood pressure",
-                AppointmentTasks = new List<AppointmentTask>
-                {
-                    new AppointmentTask { Description = "Check blood pressure",    IsCompleted = false },
-                    new AppointmentTask { Description = "Administer medication",   IsCompleted = false }
-                }
-            },
-            new Appointment
-            {
-                ClientId = clients[1].ClientId,
-                HealthcareWorkerId = workers[1].HealthcareWorkerId,
-                Start = DateTime.Today.AddHours(11),
-                End   = DateTime.Today.AddHours(12),
-                Notes = "Assistance with mobility exercises",
-                AppointmentTasks = new List<AppointmentTask>
-                {
-                    new AppointmentTask { Description = "Help with walking exercises", IsCompleted = false }
-                }
-            }
-        };
-        context.Appointments.AddRange(appts);
-        await context.SaveChangesAsync();
-
+        // 1) Create slots
         var slots = new List<AvailableSlot>
         {
             new AvailableSlot
@@ -177,30 +147,58 @@ public static class DBInit
                 HealthcareWorkerId = workers[1].HealthcareWorkerId,
                 Start = DateTime.Today.AddHours(15),
                 End   = DateTime.Today.AddHours(16),
-                IsBooked = true
+                IsBooked = false // set false for now; will flip after linking
             }
         };
         context.AvailableSlots.AddRange(slots);
         await context.SaveChangesAsync();
 
-        var changeLogs = new List<ChangeLog>
+        // 2) Create appointments and LINK BOTH
+        var appts = new List<Appointment>
         {
-            new ChangeLog
+            new Appointment
             {
-                AppointmentId = appts[0].Id,
-                ChangeDate = DateTime.Now,
-                ChangedByUserId = 1, // demo value
-                ChangeDescription = "Updated notes for medication"
+                ClientId = clients[0].ClientId,
+                HealthcareWorkerId = workers[0].HealthcareWorkerId,
+                Start = DateTime.Today.AddHours(9),
+                End   = DateTime.Today.AddHours(10),
+                Notes = "Medication check and blood pressure",
+                // AvailableSlot = slots[0],
+                AppointmentTasks = new List<AppointmentTask>
+                {
+                    new AppointmentTask { Description = "Check blood pressure" },
+                    new AppointmentTask { Description = "Administer medication" }
+                }
             },
-            new ChangeLog
+            new Appointment
             {
-                AppointmentId = appts[1].Id,
-                ChangeDate = DateTime.Now,
-                ChangedByUserId = 2,
-                ChangeDescription = "Rescheduled due to patient request"
+                ClientId = clients[1].ClientId,
+                HealthcareWorkerId = workers[1].HealthcareWorkerId,
+                Start = DateTime.Today.AddHours(11),
+                End   = DateTime.Today.AddHours(12),
+                Notes = "Assistance with mobility exercises",
+                AvailableSlot = slots[1],
+                AppointmentTasks = new List<AppointmentTask>
+                {
+                    new AppointmentTask { Description = "Help with walking exercises" }
+                }
             }
         };
-        context.ChangeLogs.AddRange(changeLogs);
+        context.Appointments.AddRange(appts);
         await context.SaveChangesAsync();
+
+        // 3) Mark the linked slots as booked (optional convenience flag)
+        slots[0].IsBooked = false;
+        slots[1].IsBooked = true;
+        await context.SaveChangesAsync();
+
+        // 4) Change logs (safe now that appt IDs exist)
+        context.ChangeLogs.AddRange(
+            new ChangeLog { AppointmentId = appts[0].Id, ChangeDate = DateTime.Now, ChangedByUserId = 1, ChangeDescription = "Updated notes for medication" },
+            new ChangeLog { AppointmentId = appts[1].Id, ChangeDate = DateTime.Now, ChangedByUserId = 2, ChangeDescription = "Rescheduled due to patient request" }
+        );
+        await context.SaveChangesAsync();
+
+
     }
 }

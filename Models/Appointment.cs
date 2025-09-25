@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HomecareAppointmentManagment.Models;
@@ -30,6 +29,9 @@ public class Appointment : IValidatableObject
 
     [StringLength(1000, ErrorMessage = "Notes must be at most {1} characters.")]
     public string Notes { get; set; } = string.Empty;
+
+    public int? AvailableSlotId { get; set; } // Foreign key to AvailableSlot
+    public virtual AvailableSlot? AvailableSlot { get; set; }
 
     public virtual List<AppointmentTask>? AppointmentTasks { get; set; }
 
