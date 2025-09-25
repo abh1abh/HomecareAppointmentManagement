@@ -25,8 +25,6 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("IsClient", p => p.RequireRole("Client"));
 });
 
-
-
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
 builder.Services.AddScoped<IHealthcareWorkerRepository, HealthcareWorkerRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
@@ -42,9 +40,9 @@ var loggerConfiguration = new LoggerConfiguration()
     .WriteTo.File($"Logs/app_{DateTime.Now:yyyy-MM-dd}.txt")
     .MinimumLevel.Information();
 
-loggerConfiguration.Filter.ByExcluding(e => e.Properties.TryGetValue("SourceContext", out var source) &&
-                            e.Level == LogEventLevel.Information && 
-                            e.MessageTemplate.Text.Contains("Executing DbCommand"));
+loggerConfiguration.Filter.ByExcluding(e => e.Properties.TryGetValue("SourceContext", out var value) &&
+                            e.Level == LogEventLevel.Information &&
+                            e.MessageTemplate.Text.Contains("Executed DbCommand"));
 
 var logger = loggerConfiguration.CreateLogger();
 builder.Logging.AddSerilog(logger);
