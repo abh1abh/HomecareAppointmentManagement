@@ -4,6 +4,7 @@ using HomecareAppointmentManagment.Models;
 using HomecareAppointmentManagment.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 
 namespace HomecareAppointmentManagment.Controllers;
 
@@ -11,14 +12,25 @@ namespace HomecareAppointmentManagment.Controllers;
 public class AppointmentController : Controller
 {
     private readonly IAppointmentRepository _appointmentRepository;
-    private readonly IAvailableSlotRepository _availableSlotRepository; 
-    private readonly ILogger<AppointmentController> _logger; // Added
+    private readonly IAvailableSlotRepository _availableSlotRepository;
+    private readonly IClientRepository _clientRepository; 
+    private readonly IAppointmentTaskRepository _appointmentTaskRepository;
+    private readonly ILogger<AppointmentController> _logger; 
 
-    public AppointmentController(IAppointmentRepository appointmentRepository, IAvailableSlotRepository availableSlotRepository, ILogger<AppointmentController> logger) // Modified
+    public AppointmentController
+    (
+        IAppointmentRepository appointmentRepository,
+        IAvailableSlotRepository availableSlotRepository,
+        IClientRepository clientRepository,
+        IAppointmentTaskRepository appointmentTaskRepository,   
+        ILogger<AppointmentController> logger
+    ) 
     {
         _appointmentRepository = appointmentRepository;
-        _availableSlotRepository = availableSlotRepository; // Modified
-        _logger = logger; // Added
+        _availableSlotRepository = availableSlotRepository; 
+        _clientRepository = clientRepository; 
+        _appointmentTaskRepository = appointmentTaskRepository;
+        _logger = logger; 
     }
 
     public async Task<IActionResult> Index()
@@ -107,45 +119,79 @@ public class AppointmentController : Controller
     {
         var slots = await _availableSlotRepository.GetAll(); // or a dedicated method like GetUnbookedFuture()
 
-        return View(new AppointmentCreateViewModel
+        var viewModel = new AppointmentCreateViewModel
         {
+            IsAdmin = User.IsInRole("Admin"),
             Slots = (slots ?? Enumerable.Empty<AvailableSlot>())
                 .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
                 .OrderBy(s => s.Start)
-        });
+        };
+
+        if (viewModel.IsAdmin)
+        {
+            viewModel.Clients = await _clientRepository.GetAll();
+        }
+
+        if (viewModel.AppointmentTasks == null || viewModel.AppointmentTasks.Count == 0)
+        {
+            viewModel.AppointmentTasks = new() { new AppointmentTaskViewModel() };
+        }
+        return View(viewModel);
+
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(AppointmentCreateViewModel model)
     {
+        async Task RehydrateAsync()
+        {
+            var allSlots = await _availableSlotRepository.GetAll();
+            model.Slots = (allSlots ?? Enumerable.Empty<AvailableSlot>())
+                .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
+                .OrderBy(s => s.Start)
+                .ToList();
+
+            model.IsAdmin = User.IsInRole("Admin");
+            if (model.IsAdmin)
+                model.Clients = (await _clientRepository.GetAll())?.ToList();
+
+            if (model.AppointmentTasks == null || model.AppointmentTasks.Count == 0)
+                model.AppointmentTasks = new() { new AppointmentTaskViewModel() };
+        }
+
+        // Flags first
+        model.IsAdmin = User.IsInRole("Admin");
+
+        // Normalize tasks once
+        model.AppointmentTasks = (model.AppointmentTasks ?? new())
+            .Where(t => !string.IsNullOrWhiteSpace(t.Description))
+            .ToList();
+
+        if (model.AppointmentTasks.Count == 0)
+            ModelState.AddModelError("AppointmentTasks[0].Description", "Enter at least one task.");
+
+        // Conditional admin requirement
+        if (model.IsAdmin && model.SelectedClientId is null)
+            ModelState.AddModelError(nameof(model.SelectedClientId),
+                "Admin must specify a client to create an appointment for.");
+
+        // Slot requirement (keep even if you have [Required] on VM for robustness)
+        if (model.SelectedSlotId is null)
+            ModelState.AddModelError(nameof(model.SelectedSlotId), "Please choose an available slot.");
+
+        // One gate
         if (!ModelState.IsValid)
         {
-            var allSlots = await _availableSlotRepository.GetAll();
-            model.Slots = (allSlots ?? Enumerable.Empty<AvailableSlot>())
-                .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
-                .OrderBy(s => s.Start);
+            await RehydrateAsync();
             return View(model);
         }
 
-        if (model.SelectedSlotId is null)
-        {
-            ModelState.AddModelError(nameof(model.SelectedSlotId), "Please choose an available slot.");
-            var allSlots = await _availableSlotRepository.GetAll();
-            model.Slots = (allSlots ?? Enumerable.Empty<AvailableSlot>())
-                .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
-                .OrderBy(s => s.Start);
-            return View(model);
-        }
-
+        // From here on, assumptions hold: slot id and (if admin) client id exist
         var slot = await _availableSlotRepository.GetById(model.SelectedSlotId.Value);
-
         if (slot is null || slot.IsBooked || slot.Start <= DateTime.UtcNow)
         {
             ModelState.AddModelError(nameof(model.SelectedSlotId), "That slot is no longer available.");
-            var allSlots = await _availableSlotRepository.GetAll();
-            model.Slots = (allSlots ?? Enumerable.Empty<AvailableSlot>())
-                .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
-                .OrderBy(s => s.Start);
+            await RehydrateAsync();
             return View(model);
         }
 
@@ -155,62 +201,76 @@ public class AppointmentController : Controller
             clientId = User.TryGetClientId();
             if (clientId is null) return Forbid();
         }
-        else if (User.IsInRole("Admin")) // Admin must specify client
+        else if (model.IsAdmin)
         {
-            clientId = User.TryGetClientId(); 
-            if (clientId is null)
-            {
-                ModelState.AddModelError("", "Admin must specify a client to create an appointment for.");
-                var allSlots = await _availableSlotRepository.GetAll();
-                model.Slots = (allSlots ?? Enumerable.Empty<AvailableSlot>())
-                    .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
-                    .OrderBy(s => s.Start);
-                return View(model);
-            }
+            // This should be non-null due to the earlier validation
+            clientId = model.SelectedClientId;
         }
 
-        var appt = new Appointment
+        var appointment = new Appointment
         {
             ClientId = clientId!.Value,
             HealthcareWorkerId = slot.HealthcareWorkerId,
             Start = slot.Start,
             End = slot.End,
-            Notes = model.Notes
+            Notes = model.Notes ?? string.Empty
         };
 
+        if (!TryValidateModel(appointment))
+        {
+            await RehydrateAsync();
+            return View(model);
+        }
+
+        // Book slot
         slot.IsBooked = true;
         var slotUpdated = await _availableSlotRepository.Update(slot);
         if (!slotUpdated)
         {
             _logger.LogError("[AppointmentController] failed to mark slot {SlotId} booked", slot.Id);
             ModelState.AddModelError("", "Could not book the selected slot. Please try another slot.");
-            var allSlots = await _availableSlotRepository.GetAll();
-            model.Slots = (allSlots ?? Enumerable.Empty<AvailableSlot>())
-                .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
-                .OrderBy(s => s.Start);
+            await RehydrateAsync();
             return View(model);
         }
 
-        var created = await _appointmentRepository.Create(appt);
-        if (!created) // rollback slot if appointment creation fails
+        // Create appointment
+        var created = await _appointmentRepository.Create(appointment);
+        if (!created)
         {
-            
             slot.IsBooked = false;
             await _availableSlotRepository.Update(slot);
 
-            _logger.LogError("[AppointmentController] appointment creation failed {@appointment}", appt);
+            _logger.LogWarning("[AppointmentController] appointment creation failed {@appointment}", appointment);
             ModelState.AddModelError("", "Could not create appointment. Please try again.");
-            var allSlots = await _availableSlotRepository.GetAll();
-            model.Slots = (allSlots ?? Enumerable.Empty<AvailableSlot>())
-                .Where(s => !s.IsBooked && s.Start > DateTime.UtcNow)
-                .OrderBy(s => s.Start);
+            await RehydrateAsync();
             return View(model);
         }
 
+        // Create tasks
+        foreach (var t in model.AppointmentTasks)
+        {
+            var ok = await _appointmentTaskRepository.Create(new AppointmentTask
+            {
+                AppointmentId = appointment.Id,
+                Description = t.Description!,
+                IsCompleted = false
+            });
+
+            if (!ok)
+            {
+                await _appointmentRepository.Delete(appointment.Id);
+                slot.IsBooked = false;
+                await _availableSlotRepository.Update(slot);
+
+                ModelState.AddModelError(string.Empty, "Could not create tasks. Please try again.");
+                await RehydrateAsync();
+                return View(model);
+            }
+        }
+
         return RedirectToAction(nameof(Index));
-        // _logger.LogError("[AppointmentController] appointment creation failed {@appointment}", appointment);
-        // return View(appointment);
     }
+
 
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
