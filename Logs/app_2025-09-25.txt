@@ -11,3 +11,66 @@
 2025-09-25 09:42:45.317 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement) in 93.2305ms
 2025-09-25 09:42:45.317 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
 2025-09-25 09:42:45.321 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/ - 200 null text/html; charset=utf-8 122.3409ms
+2025-09-25 09:44:17.047 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot - null null
+2025-09-25 09:44:17.072 +02:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (HealthcareWorker|Admin)
+2025-09-25 09:44:17.079 +02:00 [INF] AuthenticationScheme: Identity.Application was challenged.
+2025-09-25 09:44:17.080 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 302 0 null 32.8127ms
+2025-09-25 09:44:17.089 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - null null
+2025-09-25 09:44:17.096 +02:00 [INF] Executing endpoint '/Account/Login'
+2025-09-25 09:44:17.139 +02:00 [INF] Route matched with {page = "/Account/Login", area = "Identity", action = "", controller = ""}. Executing page /Account/Login
+2025-09-25 09:44:17.167 +02:00 [INF] Executing handler method HomecareAppointmentManagement.Areas.Identity.Pages.Account.LoginModel.OnGetAsync - ModelState is "Valid"
+2025-09-25 09:44:17.171 +02:00 [INF] AuthenticationScheme: Identity.External signed out.
+2025-09-25 09:44:17.172 +02:00 [INF] Executed handler method OnGetAsync, returned result .
+2025-09-25 09:44:17.173 +02:00 [INF] Executing an implicit handler method - ModelState is "Valid"
+2025-09-25 09:44:17.173 +02:00 [INF] Executed an implicit handler method, returned result Microsoft.AspNetCore.Mvc.RazorPages.PageResult.
+2025-09-25 09:44:17.205 +02:00 [INF] Executed page /Account/Login in 66.5808ms
+2025-09-25 09:44:17.205 +02:00 [INF] Executed endpoint '/Account/Login'
+2025-09-25 09:44:17.206 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - 200 null text/html; charset=utf-8 116.7449ms
+2025-09-25 09:44:17.308 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - null null
+2025-09-25 09:44:17.308 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - null null
+2025-09-25 09:44:17.313 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - 404 0 null 29.8242ms
+2025-09-25 09:44:17.313 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - 404 0 null 4.5567ms
+2025-09-25 09:44:17.313 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js, Response status code: 404
+2025-09-25 09:44:17.313 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js, Response status code: 404
+2025-09-25 09:44:17.686 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot - null null
+2025-09-25 09:44:17.687 +02:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (HealthcareWorker|Admin)
+2025-09-25 09:44:17.687 +02:00 [INF] AuthenticationScheme: Identity.Application was challenged.
+2025-09-25 09:44:17.687 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 302 0 null 1.1004ms
+2025-09-25 09:44:17.689 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - null null
+2025-09-25 09:44:17.691 +02:00 [INF] Executing endpoint '/Account/Login'
+2025-09-25 09:44:17.691 +02:00 [INF] Route matched with {page = "/Account/Login", area = "Identity", action = "", controller = ""}. Executing page /Account/Login
+2025-09-25 09:44:17.698 +02:00 [INF] Executing handler method HomecareAppointmentManagement.Areas.Identity.Pages.Account.LoginModel.OnGetAsync - ModelState is "Valid"
+2025-09-25 09:44:17.698 +02:00 [INF] AuthenticationScheme: Identity.External signed out.
+2025-09-25 09:44:17.698 +02:00 [INF] Executed handler method OnGetAsync, returned result .
+2025-09-25 09:44:17.698 +02:00 [INF] Executing an implicit handler method - ModelState is "Valid"
+2025-09-25 09:44:17.698 +02:00 [INF] Executed an implicit handler method, returned result Microsoft.AspNetCore.Mvc.RazorPages.PageResult.
+2025-09-25 09:44:17.699 +02:00 [INF] Executed page /Account/Login in 8.3275ms
+2025-09-25 09:44:17.699 +02:00 [INF] Executed endpoint '/Account/Login'
+2025-09-25 09:44:17.699 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - 200 null text/html; charset=utf-8 10.49ms
+2025-09-25 09:44:17.711 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - null null
+2025-09-25 09:44:17.711 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - null null
+2025-09-25 09:44:17.712 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js - 404 0 null 0.877ms
+2025-09-25 09:44:17.712 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js - 404 0 null 0.9815ms
+2025-09-25 09:44:17.712 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js, Response status code: 404
+2025-09-25 09:44:17.712 +02:00 [INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET http://localhost:5191/lib/jquery-validation/dist/jquery.validate.min.js, Response status code: 404
+2025-09-25 09:44:19.861 +02:00 [INF] Request starting HTTP/1.1 POST http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - application/x-www-form-urlencoded 267
+2025-09-25 09:44:19.862 +02:00 [INF] Executing endpoint '/Account/Login'
+2025-09-25 09:44:19.863 +02:00 [INF] Route matched with {page = "/Account/Login", area = "Identity", action = "", controller = ""}. Executing page /Account/Login
+2025-09-25 09:44:19.879 +02:00 [INF] Executing handler method HomecareAppointmentManagement.Areas.Identity.Pages.Account.LoginModel.OnPostAsync - ModelState is "Valid"
+2025-09-25 09:44:19.980 +02:00 [INF] AuthenticationScheme: Identity.Application signed in.
+2025-09-25 09:44:19.981 +02:00 [INF] User logged in.
+2025-09-25 09:44:19.981 +02:00 [INF] Executed handler method OnPostAsync, returned result Microsoft.AspNetCore.Mvc.LocalRedirectResult.
+2025-09-25 09:44:19.982 +02:00 [INF] Executing LocalRedirectResult, redirecting to /AvailableSlot.
+2025-09-25 09:44:19.982 +02:00 [INF] Executed page /Account/Login in 118.4201ms
+2025-09-25 09:44:19.982 +02:00 [INF] Executed endpoint '/Account/Login'
+2025-09-25 09:44:19.986 +02:00 [INF] Request finished HTTP/1.1 POST http://localhost:5191/Identity/Account/Login?ReturnUrl=%2FAvailableSlot - 302 0 null 124.7188ms
+2025-09-25 09:44:19.986 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/AvailableSlot - null null
+2025-09-25 09:44:19.988 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 09:44:19.990 +02:00 [INF] Route matched with {action = "Index", controller = "AvailableSlot", page = "", area = ""}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Index() on controller HomecareAppointmentManagment.Controllers.AvailableSlotController (HomecareAppointmentManagement).
+2025-09-25 09:44:20.028 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 09:44:20.034 +02:00 [INF] Executed ViewResult - view Index executed in 6.0347ms.
+2025-09-25 09:44:20.034 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement) in 44.3343ms
+2025-09-25 09:44:20.034 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
+2025-09-25 09:44:20.034 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 200 null text/html; charset=utf-8 48.3225ms
