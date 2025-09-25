@@ -155,11 +155,9 @@ public class AppointmentController : Controller
             clientId = User.TryGetClientId();
             if (clientId is null) return Forbid();
         }
-        else if (User.IsInRole("Admin"))
+        else if (User.IsInRole("Admin")) // Admin must specify client
         {
-            // If you want Admin to create for a specific client, extend the view model with ClientId
-            // For now, forbid if not provided:
-            clientId = User.TryGetClientId(); // fallback if admins are also clients; otherwise, require VM.ClientId
+            clientId = User.TryGetClientId(); 
             if (clientId is null)
             {
                 ModelState.AddModelError("", "Admin must specify a client to create an appointment for.");
