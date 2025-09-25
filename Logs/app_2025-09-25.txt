@@ -74,3 +74,119 @@ RolesAuthorizationRequirement:User.IsInRole must be true for one of the followin
 2025-09-25 09:44:20.034 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement) in 44.3343ms
 2025-09-25 09:44:20.034 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.AvailableSlotController.Index (HomecareAppointmentManagement)'
 2025-09-25 09:44:20.034 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/AvailableSlot - 200 null text/html; charset=utf-8 48.3225ms
+2025-09-25 10:31:48.852 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:33:21.015 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:39:09.856 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:39:11.798 +02:00 [ERR] Failed executing DbCommand (3ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (DbType = DateTime), @p3='?' (DbType = Int32), @p4='?' (Size = 35), @p5='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Appointments" ("AvailableSlotId", "ClientId", "End", "HealthcareWorkerId", "Notes", "Start")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5)
+RETURNING "Id";
+2025-09-25 10:39:11.862 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'HomecareAppointmentManagment.DAL.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2025-09-25 10:39:30.049 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:39:31.362 +02:00 [ERR] Failed executing DbCommand (4ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p2='?' (DbType = DateTime), @p3='?' (DbType = Int32), @p4='?' (Size = 35), @p5='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Appointments" ("AvailableSlotId", "ClientId", "End", "HealthcareWorkerId", "Notes", "Start")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5)
+RETURNING "Id";
+2025-09-25 10:39:31.380 +02:00 [ERR] An exception occurred in the database while saving changes for context type 'HomecareAppointmentManagment.DAL.AppDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> Microsoft.Data.Sqlite.SqliteException (0x80004005): SQLite Error 19: 'FOREIGN KEY constraint failed'.
+   at Microsoft.Data.Sqlite.SqliteException.ThrowExceptionForRC(Int32 rc, sqlite3 db)
+   at Microsoft.Data.Sqlite.SqliteDataReader.NextResult()
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReader(CommandBehavior behavior)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.Data.Sqlite.SqliteCommand.ExecuteDbDataReaderAsync(CommandBehavior behavior, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+2025-09-25 10:42:51.379 +02:00 [INF] User profile is available. Using '/Users/alexanderhoyskel/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-09-25 10:42:52.865 +02:00 [INF] Now listening on: http://localhost:5191
+2025-09-25 10:42:52.868 +02:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-09-25 10:42:52.869 +02:00 [INF] Hosting environment: Development
+2025-09-25 10:42:52.869 +02:00 [INF] Content root path: /Users/alexanderhoyskel/VSCode/HomecareAppointmentManagement
+2025-09-25 10:42:53.370 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/ - null null
+2025-09-25 10:42:53.483 +02:00 [INF] AuthenticationScheme: Identity.Application signed out.
+2025-09-25 10:42:53.514 +02:00 [INF] AuthenticationScheme: Identity.External signed out.
+2025-09-25 10:42:53.559 +02:00 [INF] AuthenticationScheme: Identity.TwoFactorUserId signed out.
+2025-09-25 10:42:53.560 +02:00 [INF] AuthenticationScheme: Identity.TwoFactorRememberMe signed out.
+2025-09-25 10:42:53.568 +02:00 [INF] Identity.Application was not authenticated. Failure message: No principal.
+2025-09-25 10:42:53.577 +02:00 [INF] Executing endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:42:53.588 +02:00 [INF] Route matched with {action = "Index", controller = "Home", page = "", area = ""}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller HomecareAppointmentManagment.Controllers.HomeController (HomecareAppointmentManagement).
+2025-09-25 10:42:53.595 +02:00 [INF] Executing ViewResult, running view Index.
+2025-09-25 10:42:53.647 +02:00 [INF] Executed ViewResult - view Index executed in 51.8429ms.
+2025-09-25 10:42:53.648 +02:00 [INF] Executed action HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement) in 59.9696ms
+2025-09-25 10:42:53.648 +02:00 [INF] Executed endpoint 'HomecareAppointmentManagment.Controllers.HomeController.Index (HomecareAppointmentManagement)'
+2025-09-25 10:42:53.653 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/ - 200 null text/html; charset=utf-8 284.1781ms
+2025-09-25 10:42:54.252 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery.js - null null
+2025-09-25 10:42:54.252 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery.validate.js - null null
+2025-09-25 10:42:54.252 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/jquery.validate.unobtrusive.js - null null
+2025-09-25 10:42:54.252 +02:00 [INF] Request starting HTTP/1.1 GET http://localhost:5191/lib/bootstrap.js - null null
+2025-09-25 10:42:54.257 +02:00 [INF] The file /lib/jquery.validate.js was not modified
+2025-09-25 10:42:54.257 +02:00 [INF] The file /lib/bootstrap.js was not modified
+2025-09-25 10:42:54.257 +02:00 [INF] The file /lib/jquery.js was not modified
+2025-09-25 10:42:54.257 +02:00 [INF] The file /lib/jquery.validate.unobtrusive.js was not modified
+2025-09-25 10:42:54.258 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery.validate.js - 304 null text/javascript 6.3957ms
+2025-09-25 10:42:54.258 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/bootstrap.js - 304 null text/javascript 6.4246ms
+2025-09-25 10:42:54.258 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery.validate.unobtrusive.js - 304 null text/javascript 6.4207ms
+2025-09-25 10:42:54.258 +02:00 [INF] Request finished HTTP/1.1 GET http://localhost:5191/lib/jquery.js - 304 null text/javascript 6.503ms

@@ -23,6 +23,8 @@ public class AvailableSlot : IValidatableObject
 
     public bool IsBooked { get; set; }
 
+    public virtual Appointment? Appointment { get; set; } // Navigation property to Appointment    
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (End <= Start)
