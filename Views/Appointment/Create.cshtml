@@ -1,0 +1,29 @@
+@model AppointmentCreateViewModel
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+    <div class="form-group">
+        <label for="SelectedSlotId">Choose an available slot</label>
+        <select asp-for="SelectedSlotId" class="form-control">
+            <option value="">-- Select a slot --</option>
+            @foreach (var s in Model.Slots)
+            {
+                <option value="@s.Id">
+                    @($"{s.Start:g} - {s.End:t} (Worker #{s.HealthcareWorkerId})")
+                </option>
+            }
+        </select>
+        <span asp-validation-for="SelectedSlotId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Notes"></label>
+        <input asp-for="Notes" class="form-control" />
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create appointment</button>
+</form>
