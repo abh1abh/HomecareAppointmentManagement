@@ -49,25 +49,10 @@ else
     </dl>
 
     <div class="mt-4 d-flex gap-2 flex-wrap">
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>        
+        <a asp-action="Edit" asp-route-id="@Model.Appointment.Id" class="btn btn-primary">Edit</a>        
+        <a asp-action="Cancel" asp-route-id="@Model.Appointment.Id" class="btn btn-outline-danger">Cancel</a>
 
-        @* Actions vary by ViewMode *@
-        @if (Model.ViewMode == AppointmentViewMode.Admin)
-        {
-            <a asp-action="Edit" asp-route-id="@Model.Appointment.Id" class="btn btn-primary">Edit</a>
-            <a asp-action="Delete" asp-route-id="@Model.Appointment.Id" class="btn btn-outline-danger">Delete</a>
-        }
-        else if (Model.ViewMode == AppointmentViewMode.Client)
-        {
-            @* Example placeholders: wire these to real actions if you have them *@
-            <a asp-action="Reschedule" asp-route-id="@Model.Appointment.Id" class="btn btn-primary">Reschedule</a>
-            <a asp-action="Cancel" asp-route-id="@Model.Appointment.Id" class="btn btn-outline-danger">Cancel</a>
-        }
-        else if (Model.ViewMode == AppointmentViewMode.Worker)
-        {
-            @* Example placeholders for workers *@
-            <a asp-action="StartVisit" asp-route-id="@Model.Appointment.Id" class="btn btn-primary">Start Visit</a>
-            <a asp-action="Complete" asp-route-id="@Model.Appointment.Id" class="btn btn-success">Mark Complete</a>
-        }
+      
     </div>
 }
