@@ -15,6 +15,7 @@ public class AppointmentController : Controller
     private readonly IAvailableSlotRepository _availableSlotRepository;
     private readonly IClientRepository _clientRepository; 
     private readonly IAppointmentTaskRepository _appointmentTaskRepository;
+    private readonly IChangeLogRepository _changeLogRepository;
     private readonly ILogger<AppointmentController> _logger; 
 
     public AppointmentController
@@ -22,7 +23,8 @@ public class AppointmentController : Controller
         IAppointmentRepository appointmentRepository,
         IAvailableSlotRepository availableSlotRepository,
         IClientRepository clientRepository,
-        IAppointmentTaskRepository appointmentTaskRepository,   
+        IAppointmentTaskRepository appointmentTaskRepository,
+        IChangeLogRepository changeLogRepository,
         ILogger<AppointmentController> logger
     ) 
     {
@@ -30,6 +32,7 @@ public class AppointmentController : Controller
         _availableSlotRepository = availableSlotRepository; 
         _clientRepository = clientRepository; 
         _appointmentTaskRepository = appointmentTaskRepository;
+        _changeLogRepository = changeLogRepository;
         _logger = logger; 
     }
 
@@ -216,11 +219,6 @@ public class AppointmentController : Controller
             Notes = model.Notes ?? string.Empty
         };
 
-        if (!TryValidateModel(appointment))
-        {
-            await RehydrateAsync();
-            return View(model);
-        }
 
         // Book slot
         slot.IsBooked = true;
@@ -292,14 +290,77 @@ public class AppointmentController : Controller
             _logger.LogError("[AppointmentController] appointment ID mismatch during edit for AppointmentId {AppointmentId:0000}", id);
             return NotFound("Appointment ID mismatch");
         }
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            bool returnOk = await _appointmentRepository.Update(appointment); // Modified
-            if (returnOk)
-                return RedirectToAction(nameof(Index));
+            _logger.LogWarning("[AppointmentController] appointment update failed for AppointmentId {AppointmentId:0000}, {@appointment}", id, appointment);
+            return View(appointment);
         }
-        _logger.LogError("[AppointmentController] appointment update failed for AppointmentId {AppointmentId:0000}, {@appointment}", id, appointment);
-        return View(appointment);
+
+        var existing = await _appointmentRepository.GetById(id);
+        if (existing == null)
+        {
+            _logger.LogError("[AppointmentController] appointment not found during edit for AppointmentId {AppointmentId:0000}", id);
+            return NotFound("Appointment not found");
+        }
+
+        var changes = new List<string>();
+        if (existing.ClientId != appointment.ClientId)
+        changes.Add($"ClientId: {existing.ClientId} → {appointment.ClientId}");
+
+        if (existing.HealthcareWorkerId != appointment.HealthcareWorkerId)
+            changes.Add($"HealthcareWorkerId: {existing.HealthcareWorkerId} → {appointment.HealthcareWorkerId}");
+
+        if (existing.Start != appointment.Start)
+            changes.Add($"Start: {existing.Start:u} → {appointment.Start:u}");
+
+        if (existing.End != appointment.End)
+            changes.Add($"End: {existing.End:u} → {appointment.End:u}");
+
+        if (!string.Equals(existing.Notes ?? string.Empty, appointment.Notes ?? string.Empty, StringComparison.Ordinal))
+            changes.Add($"Notes: \"{existing.Notes}\" → \"{appointment.Notes}\"");
+
+        // If nothing actually changed, short-circuit (optional)
+        if (changes.Count == 0)
+        {
+            // Nothing to update/log; just go back
+            return RedirectToAction(nameof(Details), new { id = appointment.Id });
+        }
+
+        existing.ClientId = appointment.ClientId;
+        existing.HealthcareWorkerId = appointment.HealthcareWorkerId;
+        existing.Start = appointment.Start;
+        existing.End = appointment.End;
+        existing.Notes = appointment.Notes ?? string.Empty;
+
+        var updatedOk = await _appointmentRepository.Update(existing);
+        if (!updatedOk)
+        {
+            _logger.LogError("[AppointmentController] appointment update failed for AppointmentId {AppointmentId:0000}, {@appointment}", id, appointment);
+            return View(appointment);
+        }
+
+        var userId = User.TryGetUserId() ?? 0; // Use 0 or some sentinel if you cannot resolve a user id
+        var description = string.Join("; ", changes);
+        if (description.Length > 500) description = description[..500];
+
+
+        var log = new ChangeLog
+        {
+            AppointmentId = appointment.Id,
+            ChangeDate = DateTime.UtcNow,
+            ChangedByUserId = userId,
+            ChangeDescription = description
+        };
+
+        var logged = await _changeLogRepository.Create(log);
+        if (!logged)
+        {
+            // Don't fail the whole edit even if change log doesn't happen
+            _logger.LogWarning("[AppointmentController] failed to create change log for AppointmentId {AppointmentId:0000}. Description: {Description}", appointment.Id, description);
+        }
+
+        return RedirectToAction(nameof(Index));
+
     }
 
     [HttpGet]
