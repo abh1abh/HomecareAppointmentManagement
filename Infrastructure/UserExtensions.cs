@@ -11,4 +11,7 @@ public static class UserExtensions
         => int.TryParse(user.FindFirstValue("ClientId"), out var id) ? id : (int?)null;
 
     public static bool IsAdmin(this ClaimsPrincipal user) => user.IsInRole("Admin");
+
+    public static int? TryGetUserId(this ClaimsPrincipal user)
+        => int.TryParse(user.FindFirstValue(ClaimTypes.NameIdentifier), out var id) ? id : (int?)null;
 }
