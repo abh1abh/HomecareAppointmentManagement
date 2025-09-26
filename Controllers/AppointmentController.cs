@@ -4,7 +4,6 @@ using HomecareAppointmentManagment.Models;
 using HomecareAppointmentManagment.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HomecareAppointmentManagment.Controllers;
 
@@ -13,10 +12,10 @@ public class AppointmentController : Controller
 {
     private readonly IAppointmentRepository _appointmentRepository;
     private readonly IAvailableSlotRepository _availableSlotRepository;
-    private readonly IClientRepository _clientRepository; 
+    private readonly IClientRepository _clientRepository;
     private readonly IAppointmentTaskRepository _appointmentTaskRepository;
     private readonly IChangeLogRepository _changeLogRepository;
-    private readonly ILogger<AppointmentController> _logger; 
+    private readonly ILogger<AppointmentController> _logger;
 
     public AppointmentController
     (
@@ -26,14 +25,14 @@ public class AppointmentController : Controller
         IAppointmentTaskRepository appointmentTaskRepository,
         IChangeLogRepository changeLogRepository,
         ILogger<AppointmentController> logger
-    ) 
+    )
     {
         _appointmentRepository = appointmentRepository;
-        _availableSlotRepository = availableSlotRepository; 
-        _clientRepository = clientRepository; 
+        _availableSlotRepository = availableSlotRepository;
+        _clientRepository = clientRepository;
         _appointmentTaskRepository = appointmentTaskRepository;
         _changeLogRepository = changeLogRepository;
-        _logger = logger; 
+        _logger = logger;
     }
 
     public async Task<IActionResult> Index()
@@ -88,7 +87,7 @@ public class AppointmentController : Controller
         }
 
         return Forbid();
-        
+
     }
 
     public async Task<IActionResult> Table()
@@ -339,7 +338,8 @@ public class AppointmentController : Controller
                 t.Description = viewModelTask.Description;
                 t.IsCompleted = viewModelTask.IsCompleted;
                 await _appointmentTaskRepository.Update(t);
-            } else
+            }
+            else
             {
                 // New task added
                 var newTask = new AppointmentTask
@@ -352,14 +352,14 @@ public class AppointmentController : Controller
                 changes.Add($"Task + \"{viewModelTask.Description}\" (new)");
             }
         }
-        
-         // If nothing actually changed
+
+        // If nothing actually changed
         if (changes.Count == 0)
         {
             // Nothing to update/log; just go back
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
-        
+
         var updatedOk = await _appointmentRepository.Update(existing);
         if (!updatedOk)
         {
@@ -414,4 +414,28 @@ public class AppointmentController : Controller
         }
         return RedirectToAction(nameof(Index));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ChangeLog(int id)
+    {
+        var appointment = await _appointmentRepository.GetById(id);
+        if (appointment == null) return NotFound("Appointment not found");
+
+        // Authorization based on user  
+        var isAdmin = User.IsInRole("Admin");
+        var isClientOwner = User.IsInRole("Client") && User.TryGetClientId() == appointment.ClientId;
+        var isWorkerOwner = User.IsInRole("HealthcareWorker") && User.TryGetHealthcareWorkerId() == appointment.HealthcareWorkerId;
+        if (!(isAdmin || isClientOwner || isWorkerOwner)) return Forbid();
+
+        var logs = await _changeLogRepository.GetByAppointmentId(id);
+
+        ViewBag.AppointmentSummary =
+        $"{appointment.Start:yyyy-MM-dd HH:mm} - {appointment.End:HH:mm}  Healthcare Worker: {appointment.HealthcareWorker?.Name ?? $"Worker #{appointment.HealthcareWorkerId}"}  Client: {appointment.Client?.Name ?? $"Worker #{appointment.ClientId}"} ";
+
+
+        return View(logs?.OrderByDescending(l => l.ChangeDate));
+
+    }
 }
+
+

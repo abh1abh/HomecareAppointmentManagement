@@ -21,18 +21,19 @@
     <dd class="col-sm-9">
         @Model.Appointment.End.ToString("yyyy-MM-dd HH:mm")
     </dd>
-
-    <dt class="col-sm-3">Healthcare worker</dt>
-    <dd class="col-sm-9">
-        @if (Model.Appointment.HealthcareWorker is not null)
-        {
-            @Model.Appointment.HealthcareWorker.Name <span class="text-muted">(@Model.Appointment.HealthcareWorkerId)</span>
-        }
-        else
-        {
-            @Model.Appointment.HealthcareWorkerId
-        }
-    </dd>
+    @if(Model.ViewMode == AppointmentViewMode.Worker || Model.ViewMode == AppointmentViewMode.Admin ){
+        <dt class="col-sm-3">Client</dt>
+        <dd class="col-sm-9">
+                @Model.Appointment.Client.Name <span class="text-muted">(@Model.Appointment.ClientId)</span>
+        </dd>
+    }
+    @if( Model.ViewMode == AppointmentViewMode.Client || Model.ViewMode == AppointmentViewMode.Admin) {
+        <dt class="col-sm-3">Healthcare worker</dt>
+        <dd class="col-sm-9">
+                @Model.Appointment.HealthcareWorker.Name <span class="text-muted">(@Model.Appointment.HealthcareWorkerId)</span>
+        </dd>
+    }
+    
 </dl>
 
 <h4 class="mt-4">Tasks</h4>
@@ -69,7 +70,9 @@
     }
 <div class="mt-4 d-flex gap-2 flex-wrap">
     <a asp-action="Index" class="btn btn-secondary">Back to List</a>        
-    <a asp-action="Edit" asp-route-id="@Model.Appointment.Id" class="btn btn-primary">Edit</a>        
+    <a asp-action="Edit" asp-route-id="@Model.Appointment.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="ChangeLog" asp-route-id="@Model.Appointment.Id" class="btn btn-primary"> View all change</a>        
     <a asp-action="Delete" asp-route-id="@Model.Appointment.Id" class="btn btn-outline-danger">Cancel</a>  
+
 </div>
 
