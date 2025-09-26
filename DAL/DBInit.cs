@@ -160,8 +160,8 @@ public static class DBInit
             {
                 ClientId = clients[1].ClientId,
                 HealthcareWorkerId = workers[1].HealthcareWorkerId,
-                Start = DateTime.Today.AddHours(11),
-                End   = DateTime.Today.AddHours(12),
+                Start = slots[1].Start,
+                End   = slots[1].End,
                 Notes = "Assistance with mobility exercises",
                 AvailableSlot = slots[1],
                 AppointmentTasks = new List<AppointmentTask>

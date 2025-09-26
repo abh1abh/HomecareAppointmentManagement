@@ -1,7 +1,7 @@
 using HomecareAppointmentManagment.Models;
 
-namespace HomecareAppointmentManagment.ViewModels
-{
+namespace HomecareAppointmentManagment.ViewModels;
+
     public class ClientViewModel
     {
         public IEnumerable<Client> Clients;
@@ -13,4 +13,3 @@ namespace HomecareAppointmentManagment.ViewModels
             CurrentViewName = currentViewName;
         }
     }
-}
