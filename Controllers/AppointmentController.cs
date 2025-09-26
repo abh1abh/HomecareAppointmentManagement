@@ -433,7 +433,7 @@ public class AppointmentController : Controller
         $"{appointment.Start:yyyy-MM-dd HH:mm} - {appointment.End:HH:mm}  Healthcare Worker: {appointment.HealthcareWorker?.Name ?? $"Worker #{appointment.HealthcareWorkerId}"}  Client: {appointment.Client?.Name ?? $"Worker #{appointment.ClientId}"} ";
 
 
-        return View(logs?.OrderByDescending(l => l.ChangeDate));
+        return View(logs?.OrderBy(l => l.ChangeDate));
 
     }
 }
