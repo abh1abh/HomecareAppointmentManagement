@@ -4,7 +4,7 @@
 @{
     ViewData["Title"] = "Edit Available Slot";
     var isAdmin = User.IsAdmin();
-    var lockTime = !isAdmin && Model.IsBooked; // worker + booked => lock Start/End
+    var lockTime = !isAdmin && Model.IsBooked;
 }
 
 <h2 class="mb-3">Edit Available Slot</h2>

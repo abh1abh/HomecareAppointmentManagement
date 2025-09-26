@@ -4,7 +4,7 @@ using HomecareAppointmentManagment.Models;
 using HomecareAppointmentManagment.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HomecareAppointmentManagment.Controllers;
 
@@ -276,67 +276,95 @@ public class AppointmentController : Controller
         var appointment = await _appointmentRepository.GetById(id);
         if (appointment == null)
         {
-            _logger.LogError("[AppointmentController] appointment not found when editing for AppointmentId {AppointmentId:0000}", id);
+            _logger.LogWarning("[AppointmentController] appointment not found when editing for AppointmentId {AppointmentId:0000}", id);
             return NotFound("Appointment not found");
         }
-        return View(appointment);
+
+        var viewModel = new AppointmentEditViewModel
+        {
+            Id = appointment.Id,
+            ClientName = appointment.Client?.Name ?? $"Client #{appointment.ClientId}",
+            HealthcareWorkerName = appointment.HealthcareWorker?.Name ?? $"Worker #{appointment.HealthcareWorkerId}",
+            Start = appointment.Start,
+            End = appointment.End,
+            Notes = appointment.Notes ?? string.Empty,
+            AppointmentTasks = (appointment.AppointmentTasks ?? new List<AppointmentTask>())
+                .Select(task => new AppointmentTaskEditItemViewModel
+                {
+                    Id = task.Id,
+                    Description = task.Description,
+                    IsCompleted = task.IsCompleted
+                })
+                .ToList()
+        };
+
+        return View(viewModel);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(int id, Appointment appointment)
+    public async Task<IActionResult> Edit(AppointmentEditViewModel model)
     {
-        if (id != appointment.Id)
-        {
-            _logger.LogError("[AppointmentController] appointment ID mismatch during edit for AppointmentId {AppointmentId:0000}", id);
-            return NotFound("Appointment ID mismatch");
-        }
         if (!ModelState.IsValid)
         {
-            _logger.LogWarning("[AppointmentController] appointment update failed for AppointmentId {AppointmentId:0000}, {@appointment}", id, appointment);
-            return View(appointment);
+            _logger.LogWarning("[AppointmentController] appointment update failed for AppointmentId {AppointmentId:0000}", model.Id);
+            return View(model);
         }
 
-        var existing = await _appointmentRepository.GetById(id);
+        var existing = await _appointmentRepository.GetById(model.Id);
         if (existing == null)
         {
-            _logger.LogError("[AppointmentController] appointment not found during edit for AppointmentId {AppointmentId:0000}", id);
+            _logger.LogError("[AppointmentController] appointment not found during edit for AppointmentId {AppointmentId:0000}", model.Id);
             return NotFound("Appointment not found");
         }
 
         var changes = new List<string>();
-        if (existing.ClientId != appointment.ClientId)
-        changes.Add($"ClientId: {existing.ClientId} → {appointment.ClientId}");
 
-        if (existing.HealthcareWorkerId != appointment.HealthcareWorkerId)
-            changes.Add($"HealthcareWorkerId: {existing.HealthcareWorkerId} → {appointment.HealthcareWorkerId}");
+        if (!string.Equals(existing.Notes ?? string.Empty, model.Notes ?? string.Empty, StringComparison.Ordinal))
+            changes.Add($"Notes: \"{existing.Notes}\" → \"{model.Notes}\"");
 
-        if (existing.Start != appointment.Start)
-            changes.Add($"Start: {existing.Start:u} → {appointment.Start:u}");
+        existing.Notes = model.Notes ?? string.Empty;
 
-        if (existing.End != appointment.End)
-            changes.Add($"End: {existing.End:u} → {appointment.End:u}");
+        // App Task dict
+        var existingById = existing.AppointmentTasks?.ToDictionary(t => t.Id, t => t);
 
-        if (!string.Equals(existing.Notes ?? string.Empty, appointment.Notes ?? string.Empty, StringComparison.Ordinal))
-            changes.Add($"Notes: \"{existing.Notes}\" → \"{appointment.Notes}\"");
-
-        // If nothing actually changed, short-circuit (optional)
+        foreach (var viewModelTask in model.AppointmentTasks)
+        {
+            if (viewModelTask.Id.HasValue && existingById.TryGetValue(viewModelTask.Id.Value, out var t))
+            {
+                if (!string.Equals(t.Description, viewModelTask.Description, StringComparison.Ordinal) ||
+                t.IsCompleted != viewModelTask.IsCompleted)
+                {
+                    changes.Add($"Task #{t.Id}: \"{t.Description}\"/{t.IsCompleted} → \"{viewModelTask.Description}\"/{viewModelTask.IsCompleted}");
+                }
+                t.Description = viewModelTask.Description;
+                t.IsCompleted = viewModelTask.IsCompleted;
+                await _appointmentTaskRepository.Update(t);
+            } else
+            {
+                // New task added
+                var newTask = new AppointmentTask
+                {
+                    AppointmentId = existing.Id,
+                    Description = viewModelTask.Description,
+                    IsCompleted = viewModelTask.IsCompleted
+                };
+                await _appointmentTaskRepository.Create(newTask);
+                changes.Add($"Task + \"{viewModelTask.Description}\" (new)");
+            }
+        }
+        
+         // If nothing actually changed
         if (changes.Count == 0)
         {
             // Nothing to update/log; just go back
-            return RedirectToAction(nameof(Details), new { id = appointment.Id });
+            return RedirectToAction(nameof(Details), new { id = model.Id });
         }
-
-        existing.ClientId = appointment.ClientId;
-        existing.HealthcareWorkerId = appointment.HealthcareWorkerId;
-        existing.Start = appointment.Start;
-        existing.End = appointment.End;
-        existing.Notes = appointment.Notes ?? string.Empty;
-
+        
         var updatedOk = await _appointmentRepository.Update(existing);
         if (!updatedOk)
         {
-            _logger.LogError("[AppointmentController] appointment update failed for AppointmentId {AppointmentId:0000}, {@appointment}", id, appointment);
-            return View(appointment);
+            _logger.LogWarning("[AppointmentController] appointment update failed for AppointmentId {AppointmentId:0000}", model.Id);
+            return View(model);
         }
 
         var userId = User.TryGetUserId() ?? 0; // Use 0 or some sentinel if you cannot resolve a user id
@@ -346,7 +374,7 @@ public class AppointmentController : Controller
 
         var log = new ChangeLog
         {
-            AppointmentId = appointment.Id,
+            AppointmentId = model.Id,
             ChangeDate = DateTime.UtcNow,
             ChangedByUserId = userId,
             ChangeDescription = description
@@ -356,7 +384,7 @@ public class AppointmentController : Controller
         if (!logged)
         {
             // Don't fail the whole edit even if change log doesn't happen
-            _logger.LogWarning("[AppointmentController] failed to create change log for AppointmentId {AppointmentId:0000}. Description: {Description}", appointment.Id, description);
+            _logger.LogWarning("[AppointmentController] failed to create change log for AppointmentId {AppointmentId:0000}. Description: {Description}", model.Id, description);
         }
 
         return RedirectToAction(nameof(Index));
