@@ -1,0 +1,44 @@
+@model HomecareAppointmentManagment.Models.Appointment  
+
+@{
+    ViewData["Title"] = "Delete Appointment";
+}
+
+<h2>Delete Appointment</h2>
+<p>Are you sure you want to delete the following appointment?</p>
+
+<div class="card mb-3">
+    <div class="card-header">Appointment Details</div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Client</dt>
+            <dd class="col-sm-9">@Model.Client?.Name</dd>
+
+            <dt class="col-sm-3">Healthcare Worker</dt>
+            <dd class="col-sm-9">@Model.HealthcareWorker?.Name</dd>
+
+            <dt class="col-sm-3">Start</dt>
+            <dd class="col-sm-9">@Model.Start.ToString("g")</dd>
+
+            <dt class="col-sm-3">End</dt>
+            <dd class="col-sm-9">@Model.End.ToString("g")</dd>
+
+            <dt class="col-sm-3">Description</dt>
+            <dd class="col-sm-9">
+                @(Model.AppointmentTasks != null 
+                    ? string.Join(", ", Model.AppointmentTasks.Select(t => t.Description)) 
+                    : "No tasks")
+            </dd>
+
+            <dt class="col-sm-3">Notes</dt>
+            <dd class="col-sm-9">@Model.Notes</dd>
+        </dl>
+    </div>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
