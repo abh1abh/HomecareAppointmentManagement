@@ -14,11 +14,6 @@
             <span asp-validation-for="HealthcareWorkerId" class="text-danger"></span>
         </div>
     }
-    else
-    {
-        @* Hide the field for workers; value will be set server-side *@
-        <input type="hidden" asp-for="HealthcareWorkerId" />
-    }
 
     <div class="form-group">
         <label asp-for="Start" class="control-label"></label><span class="text-danger">*</span>

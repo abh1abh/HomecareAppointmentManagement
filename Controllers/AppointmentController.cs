@@ -217,6 +217,7 @@ public class AppointmentController : Controller
             Start = slot.Start,
             End = slot.End,
             Notes = model.Notes ?? string.Empty
+            // Set AvailableSlotId later, after booking the slot
         };
 
 
@@ -230,6 +231,9 @@ public class AppointmentController : Controller
             await RehydrateAsync();
             return View(model);
         }
+
+        // Link appointment to slot
+        appointment.AvailableSlotId = slot.Id;
 
         // Create appointment
         var created = await _appointmentRepository.Create(appointment);
@@ -407,10 +411,31 @@ public class AppointmentController : Controller
     [HttpPost, ActionName("Delete")]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        bool returnOk = await _appointmentRepository.Delete(id); // Modified
+        Appointment? appointment = await _appointmentRepository.GetById(id);
+        if (appointment == null)
+        {
+            _logger.LogError("[AppointmentController] appointment not found when deleting for AppointmentId {AppointmentId:0000}", id);
+            return NotFound("Appointment not found");
+        }
+        // Free up slot
+        var slot = appointment.AvailableSlotId.HasValue
+            ? await _availableSlotRepository.GetById(appointment.AvailableSlotId.Value)
+            : null;
+        
+        if (slot != null)
+        {
+            slot.IsBooked = false;
+            var slotOk = await _availableSlotRepository.Update(slot);
+            if (!slotOk)
+            {
+                _logger.LogError("[AppointmentController] failed to free up slot for AppointmentId {AppointmentId:0000}", id);
+            }
+        }      
+
+        bool returnOk = await _appointmentRepository.Delete(appointment.Id); // Modified
         if (!returnOk)
         {
-            _logger.LogError("[AppointmentController] appointment deletion failed for AppointmentId {AppointmentId:0000}", id);
+            _logger.LogError("[AppointmentController] appointment deletion failed for AppointmentId {AppointmentId:0000}", appointment.Id);
             return BadRequest("Appointment deletion failed");
         }
         return RedirectToAction(nameof(Index));
