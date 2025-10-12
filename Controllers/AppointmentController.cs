@@ -116,6 +116,7 @@ public class AppointmentController : Controller
         });
     }
 
+    [Authorize(Roles = "Admin,Client")] // Restrict access to Admins and Clients, not HealthcareWorkers
     [HttpGet]
     public async Task<IActionResult> Create()
     {
