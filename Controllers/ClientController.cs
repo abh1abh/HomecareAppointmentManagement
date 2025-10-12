@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HomecareAppointmentManagment.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class ClientController : Controller
 {
-    
+
     private readonly IClientRepository _clientRepository;
     private readonly ILogger<ClientController> _logger;
 

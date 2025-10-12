@@ -1,3 +1,4 @@
+@using HomecareAppointmentManagment.Infrastructure
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,27 +20,44 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">    
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Client" asp-action="Table">Clients</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Index">Appointments</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Appointment" asp-action="Create">Book Appointment</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AvailableSlot" asp-action="Index">Available Slots</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="HealthcareWorker" asp-action="Table">Healthcare Personnel</a>
-                        </li>     
+
+                        @if (User.IsAdmin())
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Client" asp-action="Table">Clients</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="HealthcareWorker" asp-action="Table">Healthcare Personnel</a>
+                            </li>
+                        }
+
+                        @if (User.IsAdmin() || User.IsHealthcareWorker())
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="AvailableSlot" asp-action="Index">Available Slots</a>
+                            </li>
+                        }
+
+                        @if (User.IsAdmin() || User.IsHealthcareWorker() || User.IsClient())
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Appointment" asp-action="Index">Appointments</a>
+                            </li>
+                        }
+
+                        @if (User.IsAdmin() || User.IsClient())
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Appointment" asp-action="Create">Book Appointment</a>
+                            </li>
+                        }
                     </ul>
+
                     <partial name="_LoginPartial" />
                 </div>
             </div>
