@@ -61,16 +61,20 @@ public class AvailableSlotController : Controller
     public IActionResult Create() => View();
 
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(AvailableSlot slot)
     {
-        if (!ModelState.IsValid) return View(slot);
+        slot.IsBooked = false;
 
         if (!User.IsAdmin())
         {
             var myId = User.TryGetHealthcareWorkerId();
             if (myId is null) return Forbid();
-            slot.HealthcareWorkerId = myId.Value; // force ownership
+            slot.HealthcareWorkerId = myId.Value; // Force the worker to be the logged-in user
+            ModelState.Remove(nameof(AvailableSlot.HealthcareWorkerId)); // Remove validation for HealthcareWorkerId field (need to review)
         }
+        // Need to review ModelState after removing the field validation
+        if (!ModelState.IsValid) return View(slot);
 
         var ok = await _repository.Create(slot);
         if (!ok)
