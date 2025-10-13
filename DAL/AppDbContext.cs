@@ -24,5 +24,17 @@ namespace HomecareAppointmentManagment.DAL
         {
             optionsBuilder.UseLazyLoadingProxies();
         }
+
+         protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder); // keep Identity mappings
+
+            // Keep ChangeLogs even when the Appointment row is deleted:
+            modelBuilder.Entity<ChangeLog>()
+                .HasOne(c => c.Appointment)
+                .WithMany() 
+                .HasForeignKey(c => c.AppointmentId)
+                .OnDelete(DeleteBehavior.SetNull); // Set FK to null on Appointment deletion
+        }
     }
 }

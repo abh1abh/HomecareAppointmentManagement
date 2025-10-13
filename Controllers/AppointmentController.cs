@@ -372,7 +372,7 @@ public class AppointmentController : Controller
             return View(model);
         }
 
-        var userId = User.TryGetUserId() ?? 0; // Use 0 or some sentinel if you cannot resolve a user id
+        var userId = User.TryGetUserId() ?? string.Empty; // Use "" or some sentinel if you cannot resolve a user id
         var description = string.Join("; ", changes);
         if (description.Length > 500) description = description[..500];
 
@@ -430,14 +430,29 @@ public class AppointmentController : Controller
             {
                 _logger.LogError("[AppointmentController] failed to free up slot for AppointmentId {AppointmentId:0000}", id);
             }
-        }      
+        }
+        var userId = User.TryGetUserId() ?? string.Empty;
 
+        bool logged = await _changeLogRepository.Create(new ChangeLog
+        {
+            AppointmentId = appointment.Id,
+            ChangeDate = DateTime.UtcNow,
+            ChangedByUserId = userId,
+            ChangeDescription = "Appointment deleted."
+        });
+
+        if (!logged)
+        {
+            _logger.LogWarning("[AppointmentController] failed to create change log for deleted AppointmentId {AppointmentId:0000}", appointment.Id);
+        }
+        
         bool returnOk = await _appointmentRepository.Delete(appointment.Id); // Modified
         if (!returnOk)
         {
             _logger.LogError("[AppointmentController] appointment deletion failed for AppointmentId {AppointmentId:0000}", appointment.Id);
             return BadRequest("Appointment deletion failed");
         }
+
         return RedirectToAction(nameof(Index));
     }
 

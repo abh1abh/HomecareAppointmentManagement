@@ -190,8 +190,12 @@ public class AvailableSlotController : Controller
             return Forbid();
 
         var ok = await _repository.Delete(id);
-        if (!ok) return BadRequest("Available slot deletion failed");
-
+        if (!ok)
+        {
+            _logger.LogError("[AvailableSlotController] available slot deletion failed for {id}", id);
+            return BadRequest("Available slot deletion failed");
+        }
+        
         return RedirectToAction(nameof(Index));
     }
 }
