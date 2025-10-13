@@ -180,7 +180,7 @@ public static class DBInit
 
         // 4) Change logs (safe now that appt IDs exist)
         context.ChangeLogs.AddRange(
-            new ChangeLog { AppointmentId = appts[0].Id, ChangeDate = DateTime.Now, ChangedByUserId = 2, ChangeDescription = "Rescheduled due to patient request" }
+            new ChangeLog { AppointmentId = appts[0].Id, ChangeDate = DateTime.Now, ChangedByUserId = "dbInit", ChangeDescription = "Rescheduled due to patient request" }
         );
         await context.SaveChangesAsync();
 
