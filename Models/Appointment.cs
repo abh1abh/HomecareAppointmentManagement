@@ -40,14 +40,14 @@ public class Appointment : IValidatableObject
     // IValidatableObject implementation for cross validation
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        if (End <= Start)
+        if (End <= Start) // End must be after Start
         {
             yield return new ValidationResult(
                 "End time must be after start time.",
                 new[] { nameof(Start), nameof(End) });
         }
 
-        if ((End - Start) != TimeSpan.FromHours(1))
+        if ((End - Start) != TimeSpan.FromHours(1)) // Appointment must be exactly 1 hour long
         {
             yield return new ValidationResult(
                 "Each appointment must be exactly 1 hour long.",

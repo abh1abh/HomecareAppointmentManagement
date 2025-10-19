@@ -7,31 +7,31 @@ namespace HomecareAppointmentManagment.DAL;
 
 public static class DBInit
 {
-    public static async Task SeedAsync(IApplicationBuilder app)
+    public static async Task SeedAsync(IApplicationBuilder app) // Seed method to initialize the database
     {
-        using var scope = app.ApplicationServices.CreateScope();
-        var services = scope.ServiceProvider;
+        using var scope = app.ApplicationServices.CreateScope(); // Create a scope for services
+        var services = scope.ServiceProvider; // Get service provider
 
-        var context = services.GetRequiredService<AppDbContext>();
-        var userMgr = services.GetRequiredService<UserManager<IdentityUser>>();
-        var roleMgr = services.GetRequiredService<RoleManager<IdentityRole>>();
+        var context = services.GetRequiredService<AppDbContext>(); // Get the database context
+        var userMgr = services.GetRequiredService<UserManager<IdentityUser>>(); // Get user manager
+        var roleMgr = services.GetRequiredService<RoleManager<IdentityRole>>(); // Get role manager
 
         // For dev, resets db each time
-        context.Database.EnsureDeleted();
+        context.Database.EnsureDeleted(); 
         context.Database.EnsureCreated();
 
         // Roles for RBAC
         var roles = new[] { "Admin", "HealthcareWorker", "Client" };
         foreach (var r in roles)
             if (!await roleMgr.RoleExistsAsync(r))
-                await roleMgr.CreateAsync(new IdentityRole(r));
+                await roleMgr.CreateAsync(new IdentityRole(r)); // Create role if not existing
 
         // Admin user
         var adminEmail = "admin@homecare.local";
         var adminUser = await userMgr.FindByEmailAsync(adminEmail);
-        if (adminUser is null)
+        if (adminUser is null) 
         {
-            adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+            adminUser = new IdentityUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true }; // Create admin user
             await userMgr.CreateAsync(adminUser, "Admin123!");
             await userMgr.AddToRoleAsync(adminUser, "Admin");
         }
@@ -49,7 +49,7 @@ public static class DBInit
 
         foreach (var c in clientSeeds)
         {
-            // 1) Identity user
+            // Create Identity user
             var user = await userMgr.FindByEmailAsync(c.Email);
             if (user is null)
             {
@@ -58,9 +58,9 @@ public static class DBInit
                 await userMgr.AddToRoleAsync(user, "Client");
             }
 
-            // 2) Domain client row linked via IdentityUserId
+            // Create Domain client row linked via IdentityUserId
             var client = await context.Clients.FirstOrDefaultAsync(cl => cl.IdentityUserId == user.Id);
-            if (client is null)
+            if (client is null) // If client doesn't exist, create it
             {
                 client = new Client
                 {
@@ -70,18 +70,18 @@ public static class DBInit
                     Email = c.Email,
                     IdentityUserId = user.Id
                 };
-                context.Clients.Add(client);
-                await context.SaveChangesAsync();
+                context.Clients.Add(client); // Add new client to context
+                await context.SaveChangesAsync(); // Save changes to get ClientId
             }
 
-            // 3) Ensure claim: ClientId
-            var existingClaims = await userMgr.GetClaimsAsync(user);
-            if (!existingClaims.Any(cc => cc.Type == "ClientId"))
+            // Add Ensure claim: ClientId
+            var existingClaims = await userMgr.GetClaimsAsync(user); // Get existing claims
+            if (!existingClaims.Any(cc => cc.Type == "ClientId")) // If ClientId claim doesn't exist
             {
-                await userMgr.AddClaimAsync(user, new Claim("ClientId", client.ClientId.ToString()));
+                await userMgr.AddClaimAsync(user, new Claim("ClientId", client.ClientId.ToString())); // Add ClientId claim
             }
 
-            clients.Add(client);
+            clients.Add(client); // Add to clients list
         }
 
 
@@ -96,7 +96,7 @@ public static class DBInit
 
         foreach (var w in workerSeed)
         {
-            // 1) Identity user
+            // Create Identity user
             var user = await userMgr.FindByEmailAsync(w.Email);
             if (user is null)
             {
@@ -105,7 +105,7 @@ public static class DBInit
                 await userMgr.AddToRoleAsync(user, "HealthcareWorker");
             }
 
-            // 2) Domain worker row linked via IdentityUserId (if not existing)
+            // Create Domain worker row linked via IdentityUserId (if not existing)
             var worker = await context.HealthcareWorkers.FirstOrDefaultAsync(hw => hw.IdentityUserId == user.Id);
             if (worker is null)
             {
@@ -117,22 +117,22 @@ public static class DBInit
                     Email = w.Email,
                     IdentityUserId = user.Id
                 };
-                context.HealthcareWorkers.Add(worker);
-                await context.SaveChangesAsync();
+                context.HealthcareWorkers.Add(worker); // Add new worker to context
+                await context.SaveChangesAsync(); // Save changes to get HealthcareWorkerId
             }
 
-            // 3) Ensure claim: HealthcareWorkerId
+            // Add claim: HealthcareWorkerId
             var claims = await userMgr.GetClaimsAsync(user);
             if (!claims.Any(c => c.Type == "HealthcareWorkerId"))
             {
-                await userMgr.AddClaimAsync(user, new Claim("HealthcareWorkerId", worker.HealthcareWorkerId.ToString()));
+                await userMgr.AddClaimAsync(user, new Claim("HealthcareWorkerId", worker.HealthcareWorkerId.ToString())); // Add HealthcareWorkerId claim
             }
 
-            workers.Add(worker);
+            workers.Add(worker); // Add to workers list
         }
 
         // Init Appointments, AvailableSlots, ChangeLogs
-        // 1) Create slots
+        // Create slots
         var slots = new List<AvailableSlot>
         {
             new AvailableSlot
@@ -150,10 +150,10 @@ public static class DBInit
                 IsBooked = false // set false for now; will flip after linking
             }
         };
-        context.AvailableSlots.AddRange(slots);
-        await context.SaveChangesAsync();
+        context.AvailableSlots.AddRange(slots); // Add slots to context
+        await context.SaveChangesAsync(); // Save to get IDs
 
-        // 2) Create appointments and LINK BOTH
+        // Create appointments and link both
         var appts = new List<Appointment>
         {
             new Appointment
@@ -170,15 +170,15 @@ public static class DBInit
                 }
             }
         };
-        context.Appointments.AddRange(appts);
-        await context.SaveChangesAsync();
+        context.Appointments.AddRange(appts); // Add appointments to context
+        await context.SaveChangesAsync(); // Save to get IDs
 
-        // 3) Mark the linked slots as booked (optional convenience flag)
+        // Mark the linked slots as booked (optional convenience flag)
         slots[0].IsBooked = false;
         slots[1].IsBooked = true;
         await context.SaveChangesAsync();
 
-        // 4) Change logs (safe now that appt IDs exist)
+        // Change logs for appointments
         context.ChangeLogs.AddRange(
             new ChangeLog { AppointmentId = appts[0].Id, ChangeDate = DateTime.Now, ChangedByUserId = "dbInit", ChangeDescription = "Rescheduled due to patient request" }
         );

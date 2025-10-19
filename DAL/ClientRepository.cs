@@ -23,13 +23,13 @@ public class ClientRepository : IClientRepository
     {
         try
         {
-            return await _db.Clients.ToListAsync();
+            return await _db.Clients.ToListAsync(); // Try to get all clients
 
         }
         catch (Exception e)
         {
             _logger.LogError("[ClientRepository] client ToListAsync() failed when GetAll(), error messager: {e}", e.Message);
-            return null;
+            return new List<Client>(); // Return empty list on failure
         }
     }
 
@@ -37,12 +37,12 @@ public class ClientRepository : IClientRepository
     {
         try
         {
-            return await _db.Clients.FindAsync(id);
+            return await _db.Clients.FindAsync(id); // Try to find client by ID
         }
         catch (Exception e)
         {
             _logger.LogError("[ClientRepository] client FindAsync(id) failed when GetClientById() for ClientId {ClientId:0000}, error messager: {e}", id, e.Message);
-            return null;
+            return null; // Return null on failure
         }
     }
 
@@ -50,14 +50,14 @@ public class ClientRepository : IClientRepository
     {
         try
         {
-            await _db.Clients.AddAsync(client);
-            await _db.SaveChangesAsync();
-            return true;
+            await _db.Clients.AddAsync(client); // Add the new client
+            await _db.SaveChangesAsync(); // Save changes to the database
+            return true; // Return true on success
         }
         catch (Exception e)
         {
             _logger.LogError("[ClientRepository] client AddAsync() failed when Create(), error messager: {e}", e.Message);
-            return false;
+            return false; // Return false on failure
         }
     }
 
@@ -65,14 +65,14 @@ public class ClientRepository : IClientRepository
     {
         try
         {
-            _db.Clients.Update(client);
-            await _db.SaveChangesAsync();
-            return true;
+            _db.Clients.Update(client); // Update the client
+            await _db.SaveChangesAsync(); // Save changes to the database
+            return true; // Return true on success
         }
         catch (Exception e)
         {
             _logger.LogError("[ClientRepository] client Update() failed when Update() for ClientId {ClientId:0000}, error messager: {e}", client.ClientId, e.Message);
-            return false;
+            return false; // Return false on failure
         }
     }
 
@@ -80,17 +80,17 @@ public class ClientRepository : IClientRepository
     {
         try
         {
-            var client = await _db.Clients.FindAsync(id);
-            if (client == null) return false;
+            var client = await _db.Clients.FindAsync(id); // Find the client by ID
+            if (client == null) return false;  // Return false if client not found
 
-            _db.Clients.Remove(client);
-            await _db.SaveChangesAsync();
-            return true;
+            _db.Clients.Remove(client); // Remove the client
+            await _db.SaveChangesAsync(); // Save changes to the database
+            return true; // Return true on success
         }
         catch (Exception e)
         {
             _logger.LogError("[ClientRepository] client Delete() failed when Delete() for ClientId {ClientId:0000}, error messager: {e}", id, e.Message);
-            return false;
+            return false; // Return false on failure
         }
     }
 

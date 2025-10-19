@@ -4,8 +4,8 @@ namespace HomecareAppointmentManagment.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: /<controller>/
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Index() // Home page
         {
             return View();
         }

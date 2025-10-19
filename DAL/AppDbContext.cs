@@ -12,24 +12,24 @@ namespace HomecareAppointmentManagment.DAL
             // Database.EnsureCreated();
         }
 
-        public DbSet<Client> Clients { get; set; }
-        public DbSet<HealthcareWorker> HealthcareWorkers { get; set; }
-        public DbSet<Appointment> Appointments { get; set; }
-        public DbSet<AppointmentTask> AppointmentTasks { get; set; }
-        public DbSet<AvailableSlot> AvailableSlots { get; set; }
+        public DbSet<Client> Clients { get; set; } // Clients table
+        public DbSet<HealthcareWorker> HealthcareWorkers { get; set; } // Healthcare Workers table
+        public DbSet<Appointment> Appointments { get; set; } // Appointments table
+        public DbSet<AppointmentTask> AppointmentTasks { get; set; } // Appointment Tasks table
+        public DbSet<AvailableSlot> AvailableSlots { get; set; } // Available Slots table
 
-        public DbSet<ChangeLog> ChangeLogs { get; set; }
+        public DbSet<ChangeLog> ChangeLogs { get; set; } // Change Logs table
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
         {
-            optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.UseLazyLoadingProxies(); // Enable lazy loading
         }
 
-         protected override void OnModelCreating(ModelBuilder modelBuilder)
+         protected override void OnModelCreating(ModelBuilder modelBuilder) // Customize model creation 
         {
-            base.OnModelCreating(modelBuilder); // keep Identity mappings
+            base.OnModelCreating(modelBuilder); // Keep Identity mappings
 
-            // Keep ChangeLogs even when the Appointment row is deleted:
+            // Keep ChangeLogs even when the Appointment row is deleted (suggestion from ChatGPT, might move to soft deleting later)
             modelBuilder.Entity<ChangeLog>()
                 .HasOne(c => c.Appointment)
                 .WithMany() 
