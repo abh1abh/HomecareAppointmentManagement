@@ -8,6 +8,8 @@ dotnet build
 dotnet run
 ```
 
+**Runs on**: localhost:5191
+
 **Node version**: 22.11.0
 
 **.NET version**: 8.0
