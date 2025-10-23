@@ -1,8 +1,8 @@
 using HomecareAppointmentManagement.DAL;
-using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagement.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomecareAppointmentManagment.Controllers;
+namespace HomecareAppointmentManagement.Controllers;
 
 public class AppointmentTaskController : Controller
 {

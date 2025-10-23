@@ -1,11 +1,11 @@
 using HomecareAppointmentManagement.DAL;
-using HomecareAppointmentManagment.Infrastructure;
-using HomecareAppointmentManagment.Models;
-using HomecareAppointmentManagment.ViewModels;
+using HomecareAppointmentManagement.Infrastructure;
+using HomecareAppointmentManagement.Models;
+using HomecareAppointmentManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomecareAppointmentManagment.Controllers;
+namespace HomecareAppointmentManagement.Controllers;
 
 [Authorize(Roles = "Client,Admin,HealthcareWorker")] // Authorize all relevant roles
 public class AppointmentController : Controller

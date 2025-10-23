@@ -1,5 +1,4 @@
 using HomecareAppointmentManagement.DAL;
-using HomecareAppointmentManagment.DAL;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Serilog.Events;
@@ -11,6 +10,7 @@ InvalidOperationException("Connection string 'AppDbContextConnection' not found.
 
 builder.Services.AddControllersWithViews();
 
+// Db
 builder.Services.AddDbContext<AppDbContext>(options => {
     options.UseSqlite(
     builder.Configuration["ConnectionStrings:AppDbContextConnection"]);
@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AppDbContext>(options => {
 
 builder.Services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<AppDbContext>();
 
+// Roles for RBAC 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("IsAdmin", p => p.RequireRole("Admin"));
@@ -35,7 +36,7 @@ builder.Services.AddScoped<IChangeLogRepository, ChangeLogRepository>();
 builder.Services.AddRazorPages();
 builder.Services.AddSession();
 
-
+// logging 
 var loggerConfiguration = new LoggerConfiguration()
     .WriteTo.File($"Logs/app_{DateTime.Now:yyyyMMdd_HHmmss}.log")
     .MinimumLevel.Information();
@@ -52,13 +53,13 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
-    await DBInit.SeedAsync(app); // <-- seed roles & an admin
+    await DBInit.SeedAsync(app); // Seeds with users and roles in db
 
 }
 
 app.UseStaticFiles();
 
-// Correct order:
+
 app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();

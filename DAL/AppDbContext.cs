@@ -1,9 +1,9 @@
 
-using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagement.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomecareAppointmentManagment.DAL
+namespace HomecareAppointmentManagement.DAL
 {
     public class AppDbContext : IdentityDbContext
     {
