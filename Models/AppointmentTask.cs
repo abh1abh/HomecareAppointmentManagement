@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace HomecareAppointmentManagment.Models;
+namespace HomecareAppointmentManagement.Models;
 
 public class AppointmentTask
 {

@@ -1,9 +1,9 @@
 using System.Security.Claims;
-using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagement.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace HomecareAppointmentManagment.DAL;
+namespace HomecareAppointmentManagement.DAL;
 
 public static class DBInit
 {
@@ -173,7 +173,7 @@ public static class DBInit
         context.Appointments.AddRange(appts); // Add appointments to context
         await context.SaveChangesAsync(); // Save to get IDs
 
-        // Mark the linked slots as booked (optional convenience flag)
+        // Mark the linked slots as booked 
         slots[0].IsBooked = false;
         slots[1].IsBooked = true;
         await context.SaveChangesAsync();

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace HomecareAppointmentManagment.ViewModels;
+namespace HomecareAppointmentManagement.ViewModels;
 
 public class AppointmentTaskViewModel
 {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
-namespace HomecareAppointmentManagment.Models;
+namespace HomecareAppointmentManagement.Models;
 
 public class AvailableSlot : IValidatableObject
 {

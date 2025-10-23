@@ -1,10 +1,10 @@
 using HomecareAppointmentManagement.DAL;
-using HomecareAppointmentManagment.Models;
-using HomecareAppointmentManagment.ViewModels;
+using HomecareAppointmentManagement.Models;
+using HomecareAppointmentManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomecareAppointmentManagment.Controllers;
+namespace HomecareAppointmentManagement.Controllers;
 
 [Authorize(Roles = "Admin")]
 public class ClientController : Controller
@@ -27,7 +27,7 @@ public class ClientController : Controller
             _logger.LogError("[ClientController] client list not found while executing _clientRepository.GetAll()");
             return NotFound("Client list not found");
         }
-        var clientsViewModel = new ClientViewModel(clients, "Table"); // Using "Table" view
+        var clientsViewModel = new ClientViewModel(clients, "Table"); 
         return View(clientsViewModel);
     }
 

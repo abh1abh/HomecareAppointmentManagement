@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Identity;
 
-namespace HomecareAppointmentManagment.Models;
+namespace HomecareAppointmentManagement.Models;
 
 public class HealthcareWorker
 {

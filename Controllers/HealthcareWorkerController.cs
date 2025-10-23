@@ -1,9 +1,9 @@
 using HomecareAppointmentManagement.DAL;
-using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagement.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomecareAppointmentManagment.Controllers;
+namespace HomecareAppointmentManagement.Controllers;
 
 
 [Authorize(Roles = "Admin")]

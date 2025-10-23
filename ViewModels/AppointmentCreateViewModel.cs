@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagement.Models;
 
 
-namespace HomecareAppointmentManagment.ViewModels;
+namespace HomecareAppointmentManagement.ViewModels;
 
 public class AppointmentCreateViewModel
 {

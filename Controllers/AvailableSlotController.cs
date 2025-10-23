@@ -1,11 +1,11 @@
 using HomecareAppointmentManagement.DAL;
-using HomecareAppointmentManagment.Infrastructure; // <-- add
-using HomecareAppointmentManagment.Models;
-using HomecareAppointmentManagment.ViewModels;
-using Microsoft.AspNetCore.Authorization;           // <-- add
+using HomecareAppointmentManagement.Infrastructure; 
+using HomecareAppointmentManagement.Models;
+using HomecareAppointmentManagement.ViewModels;
+using Microsoft.AspNetCore.Authorization;           
 using Microsoft.AspNetCore.Mvc;
 
-namespace HomecareAppointmentManagment.Controllers;
+namespace HomecareAppointmentManagement.Controllers;
 
 [Authorize(Roles = "HealthcareWorker,Admin")] // Authorization for Healthcare Workers and Admins
 public class AvailableSlotController : Controller
@@ -31,7 +31,7 @@ public class AvailableSlotController : Controller
             });
         }
 
-        var workerId = User.TryGetHealthcareWorkerId(); // Get logged-in worker ID
+        var workerId = User.TryGetHealthcareWorkerId(); // Get logged in worker ID
         if (workerId is null) return Forbid(); 
 
         var workerslots = await _repository.GetByWorkerId(workerId.Value); // Get slots for worker

@@ -1,6 +1,6 @@
 
 
-using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagement.Models;
 
 namespace HomecareAppointmentManagement.DAL;
 public interface IClientRepository

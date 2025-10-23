@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using HomecareAppointmentManagment.Controllers;
-using HomecareAppointmentManagment.DAL;
-using HomecareAppointmentManagment.Models;
+using HomecareAppointmentManagement.Controllers;
+using HomecareAppointmentManagement.DAL;
+using HomecareAppointmentManagement.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomecareAppointmentManagement.DAL;
